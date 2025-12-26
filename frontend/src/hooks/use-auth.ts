@@ -47,16 +47,29 @@ export function useAuth() {
     email: string;
     name: string;
     password: string;
-    password2: string;
+    password_confirm: string;
     company_name?: string;
     role?: 'admin' | 'manager' | 'employee';
   }) => {
     try {
-      const response = await authApi.register(data);
+      // Transform the data to match Django serializer expectations
+      const apiData = {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+        password_confirm: data.password_confirm, // password_confirm matches Django expectation
+        role: data.role || 'employee',
+        // company is optional and would need to be handled separately
+      };
+      
+      console.log('Sending registration data:', apiData); // Debug log
+      
+      const response = await authApi.register(apiData);
       setTokens(response.tokens);
       setUser(response.user);
       return { success: true };
     } catch (error: unknown) {
+      console.error('Registration error:', error);
       return {
         success: false,
         error: (error as { response?: { data?: unknown } })?.response?.data || 'Registration failed. Please try again.',

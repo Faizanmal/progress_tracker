@@ -21,10 +21,6 @@ export default function FormAnalyticsPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, [formId, loadData]);
-
   const loadData = useCallback(async () => {
     try {
       const [formData, analyticsData, submissionsData] = await Promise.all([
@@ -41,6 +37,10 @@ export default function FormAnalyticsPage() {
       setLoading(false);
     }
   }, [formId]);
+
+  useEffect(() => {
+    loadData();
+  }, [formId, loadData]);
 
   // Prepare chart data - submissions by day (last 30 days)
   const getSubmissionsByDay = () => {
@@ -299,7 +299,7 @@ export default function FormAnalyticsPage() {
                         <TableCell key={field.id} className="max-w-xs truncate">
                           {Array.isArray(submission.payload_json[field.id])
                             ? (submission.payload_json[field.id] as unknown[]).join(', ')
-                            : submission.payload_json[field.id] || '-'}
+                            : String(submission.payload_json[field.id] || '-')}
                         </TableCell>
                       ))}
                       <TableCell className="text-right">

@@ -2,7 +2,7 @@
 AI Services for Progress Tracker
 Implements smart task assignment, progress prediction, and automated insights.
 """
-from django.db.models import Avg, Count, Sum, Q, F
+from django.db.models import Avg, Sum
 from django.utils import timezone
 from datetime import timedelta
 import statistics
@@ -160,7 +160,6 @@ class ProgressPredictor:
             completion_times.append(delta)
         
         avg_days = statistics.mean(completion_times)
-        std_days = statistics.stdev(completion_times) if len(completion_times) > 1 else avg_days * 0.3
         
         # Adjust based on current progress
         progress_factor = 1 - (task.progress_percentage / 100)

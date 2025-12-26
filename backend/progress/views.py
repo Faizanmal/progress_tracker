@@ -2,10 +2,10 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db.models import Q, Sum, Avg, Count
+from django.db.models import Q, Sum, Avg
 from django.utils import timezone
 from datetime import timedelta
-from .models import ProgressUpdate, ProgressAttachment, ProgressComment
+from .models import ProgressUpdate
 from .serializers import (
     ProgressUpdateSerializer, ProgressUpdateListSerializer,
     ProgressUpdateCreateSerializer, ProgressAttachmentSerializer,

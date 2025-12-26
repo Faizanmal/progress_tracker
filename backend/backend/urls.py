@@ -47,7 +47,7 @@ urlpatterns = [
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
     # JWT Token
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     
     # App URLs
     path('api/', include('users.urls')),
@@ -56,6 +56,7 @@ urlpatterns = [
     path('api/progress/', include('progress.urls')),
     path('api/analytics/', include('analytics.urls')),
     path('api/ai/', include('ai_insights.urls')),
+    path('api/automation/', include('automation.urls')),
 ]
 
 # Serve media files in development

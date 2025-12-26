@@ -169,10 +169,10 @@ export default function AnalyticsPage() {
               <CardContent>
                 {data?.completion_trend && data.completion_trend.length > 0 ? (
                   <div className="space-y-2">
-                    {data.completion_trend.map((item: unknown, index: number) => (
+                    {data.completion_trend.map((item, index: number) => (
                       <div key={index} className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">
-                          {new Date((item as {week: string}).week).toLocaleDateString()}
+                          {new Date(item.week).toLocaleDateString()}
                         </span>
                         <div className="flex items-center gap-2">
                           <div 
@@ -290,16 +290,16 @@ export default function AnalyticsPage() {
             <CardContent>
               {timeSummary?.by_day && timeSummary.by_day.length > 0 ? (
                 <div className="flex items-end gap-1 h-32">
-                  {timeSummary.by_day.slice(-14).map((day: unknown, index: number) => {
-                    const hours = (day as {minutes: number}).minutes / 60;
-                    const maxHours = Math.max(...timeSummary.by_day.map((d: unknown) => (d as {minutes: number}).minutes / 60));
+                  {timeSummary.by_day.slice(-14).map((day, index: number) => {
+                    const hours = day.minutes / 60;
+                    const maxHours = Math.max(...timeSummary.by_day.map((d) => d.minutes / 60));
                     const height = maxHours > 0 ? (hours / maxHours) * 100 : 0;
                     return (
                       <div key={index} className="flex-1 flex flex-col items-center gap-1">
                         <div 
                           className="w-full bg-blue-500 rounded-t transition-all"
                           style={{ height: `${height}%`, minHeight: hours > 0 ? '4px' : '0' }}
-                          title={`${hours.toFixed(1)}h on ${new Date((day as {date: string}).date).toLocaleDateString()}`}
+                          title={`${hours.toFixed(1)}h on ${new Date(day.date).toLocaleDateString()}`}
                         />
                         <span className="text-[10px] text-muted-foreground">
                           {new Date(day.date).getDate()}

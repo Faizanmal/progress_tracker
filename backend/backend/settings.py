@@ -54,6 +54,10 @@ INSTALLED_APPS = [
     "progress.apps.ProgressConfig",
     "analytics.apps.AnalyticsConfig",
     "ai_insights.apps.AiInsightsConfig",
+    "automation.apps.AutomationConfig",
+    
+    # Django Channels for WebSockets
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +70,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+APPEND_SLASH = False
 
 ROOT_URLCONF = "backend.urls"
 
@@ -178,7 +184,7 @@ SIMPLE_JWT = {
 # CORS Settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000,http://127.0.0.1:3000,http://10.0.0.231:3000',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 CORS_ALLOW_CREDENTIALS = True

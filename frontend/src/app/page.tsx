@@ -5,8 +5,57 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/hooks/use-auth";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { CheckCircle2, Users, FolderKanban, TrendingUp, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Badge } from "@/src/components/ui/badge";
+import { 
+  CheckCircle2, 
+  Users, 
+  FolderKanban, 
+  TrendingUp, 
+  ArrowRight, 
+  Sparkles,
+  Zap,
+  Shield,
+  BarChart3,
+  Clock,
+  Target,
+  Star
+} from "lucide-react";
+import { MotionDiv, FadeUp, StaggerContainer, StaggerItem, FloatingElement } from "@/src/lib/motion";
+import { PageLoader } from "@/src/components/ui/loading";
+
+const features = [
+  {
+    icon: CheckCircle2,
+    title: "Task Management",
+    description: "Create, assign, and track tasks with detailed progress updates and real-time status tracking.",
+    color: "primary",
+  },
+  {
+    icon: FolderKanban,
+    title: "Project Tracking",
+    description: "Organize tasks into projects and monitor overall progress with seamless team collaboration.",
+    color: "success",
+  },
+  {
+    icon: Users,
+    title: "Team Management",
+    description: "Role-based access control for admins, managers, and employees with granular permissions.",
+    color: "info",
+  },
+  {
+    icon: TrendingUp,
+    title: "Progress Analytics",
+    description: "Real-time analytics and reporting to track team performance and productivity metrics.",
+    color: "warning",
+  },
+];
+
+const stats = [
+  { value: "10K+", label: "Active Users" },
+  { value: "50K+", label: "Tasks Completed" },
+  { value: "99.9%", label: "Uptime" },
+  { value: "4.9/5", label: "User Rating" },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -19,139 +68,286 @@ export default function Home() {
   }, [user, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <PageLoader message="Loading..." />;
   }
 
   if (user) {
-    return null; // Will redirect to dashboard
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-16">
+    <div className="min-h-screen gradient-mesh overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-info/20 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Progress Tracker
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Track employee progress, manage tasks, and boost team productivity with our comprehensive
-            SaaS solution.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => router.push("/register")} className="text-lg">
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => router.push("/login")}
-              className="text-lg"
-            >
-              Sign In
-            </Button>
+        <section className="container mx-auto px-4 pt-20 pb-16 lg:pt-32 lg:pb-24">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <FadeUp delay={0}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-primary">
+                  Modern Progress Tracking Platform
+                </span>
+              </div>
+            </FadeUp>
+
+            {/* Heading */}
+            <FadeUp delay={0.1}>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
+                <span className="gradient-text">Track Progress.</span>
+                <br />
+                <span className="text-foreground">Boost Productivity.</span>
+              </h1>
+            </FadeUp>
+
+            {/* Subheading */}
+            <FadeUp delay={0.2}>
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+                The all-in-one platform to track employee progress, manage tasks, 
+                and boost team productivity with powerful analytics and AI-driven insights.
+              </p>
+            </FadeUp>
+
+            {/* CTAs */}
+            <FadeUp delay={0.3}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  onClick={() => router.push("/register")}
+                  className="group"
+                >
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="xl"
+                  onClick={() => router.push("/login")}
+                >
+                  Sign In
+                </Button>
+              </div>
+            </FadeUp>
+
+            {/* Social Proof */}
+            <FadeUp delay={0.4}>
+              <div className="flex items-center justify-center gap-2 mt-8 text-sm text-muted-foreground">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div 
+                      key={i}
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-violet-500 border-2 border-background flex items-center justify-center text-xs text-white font-medium"
+                    >
+                      {String.fromCharCode(64 + i)}
+                    </div>
+                  ))}
+                </div>
+                <span className="ml-2">
+                  Trusted by <strong className="text-foreground">10,000+</strong> teams worldwide
+                </span>
+              </div>
+            </FadeUp>
           </div>
-        </div>
+        </section>
 
-        {/* Features */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-16">
-          <Card>
-            <CardHeader>
-              <CheckCircle2 className="h-10 w-10 text-primary mb-2" />
-              <CardTitle>Task Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Create, assign, and track tasks with detailed progress updates and status tracking.
-              </CardDescription>
-            </CardContent>
-          </Card>
+        {/* Stats Section */}
+        <section className="container mx-auto px-4 py-12">
+          <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {stats.map((stat, i) => (
+              <StaggerItem key={i}>
+                <div className="text-center">
+                  <div className="text-3xl lg:text-4xl font-bold gradient-text mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
 
-          <Card>
-            <CardHeader>
-              <FolderKanban className="h-10 w-10 text-primary mb-2" />
-              <CardTitle>Project Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Organize tasks into projects and monitor overall progress with team collaboration.
-              </CardDescription>
-            </CardContent>
-          </Card>
+        {/* Features Section */}
+        <section className="container mx-auto px-4 py-16 lg:py-24">
+          <FadeUp>
+            <div className="text-center mb-16">
+              <Badge variant="premium" className="mb-4">Features</Badge>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                Everything you need to succeed
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Powerful features designed to help teams track progress, 
+                collaborate effectively, and achieve their goals.
+              </p>
+            </div>
+          </FadeUp>
 
-          <Card>
-            <CardHeader>
-              <Users className="h-10 w-10 text-primary mb-2" />
-              <CardTitle>Team Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Role-based access control for admins, managers, and employees with proper permissions.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <TrendingUp className="h-10 w-10 text-primary mb-2" />
-              <CardTitle>Progress Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Real-time analytics and reporting to track team performance and productivity metrics.
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
+          <StaggerContainer className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature, i) => (
+              <StaggerItem key={i}>
+                <Card variant="interactive" className="h-full group">
+                  <CardHeader>
+                    <div className={`inline-flex p-3 rounded-xl bg-${feature.color}/10 w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      <feature.icon className={`h-6 w-6 text-${feature.color}`} style={{ color: `hsl(var(--${feature.color}))` }} />
+                    </div>
+                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="leading-relaxed">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
 
         {/* Benefits Section */}
-        <Card className="max-w-4xl mx-auto">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl">Why Choose Progress Tracker?</CardTitle>
-            <CardDescription className="text-lg mt-2">
-              Everything you need to manage employee progress effectively
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">For Employees</h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li>✓ View assigned tasks and deadlines</li>
-                  <li>✓ Submit progress updates easily</li>
-                  <li>✓ Track personal productivity</li>
-                  <li>✓ Report blockers and get help</li>
-                </ul>
+        <section className="container mx-auto px-4 py-16 lg:py-24">
+          <div className="max-w-5xl mx-auto">
+            <Card variant="glass" className="p-8 lg:p-12">
+              <div className="text-center mb-12">
+                <Badge variant="premium" className="mb-4">Benefits</Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  Why Choose Progress Tracker?
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Everything you need to manage employee progress effectively
+                </p>
               </div>
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">For Managers</h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li>✓ Monitor team progress in real-time</li>
-                  <li>✓ Identify and resolve blockers quickly</li>
-                  <li>✓ Generate performance reports</li>
-                  <li>✓ Manage projects and assignments</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <h2 className="text-3xl font-bold mb-4">Ready to boost your team&apos;s productivity?</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Join thousands of teams already using Progress Tracker
-          </p>
-          <Button size="lg" onClick={() => router.push("/register")} className="text-lg">
-            Start Free Trial
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
+              <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <FadeUp delay={0.1}>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Target className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="font-semibold text-lg">For Employees</h3>
+                    </div>
+                    <ul className="space-y-4">
+                      {[
+                        "View assigned tasks and deadlines",
+                        "Submit progress updates easily",
+                        "Track personal productivity",
+                        "Report blockers and get help",
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />
+                          <span className="text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </FadeUp>
+
+                <FadeUp delay={0.2}>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-violet-500/10">
+                        <BarChart3 className="h-5 w-5 text-violet-500" />
+                      </div>
+                      <h3 className="font-semibold text-lg">For Managers</h3>
+                    </div>
+                    <ul className="space-y-4">
+                      {[
+                        "Monitor team progress in real-time",
+                        "Identify and resolve blockers quickly",
+                        "Generate performance reports",
+                        "Manage projects and assignments",
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />
+                          <span className="text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </FadeUp>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="container mx-auto px-4 py-16 lg:py-24">
+          <FadeUp>
+            <Card variant="gradient" className="max-w-4xl mx-auto p-8 lg:p-16 text-center relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-violet-500/5" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl" />
+              
+              <div className="relative">
+                <FloatingElement>
+                  <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-6">
+                    <Zap className="h-8 w-8 text-primary" />
+                  </div>
+                </FloatingElement>
+                
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  Ready to boost your team&apos;s productivity?
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+                  Join thousands of teams already using Progress Tracker to achieve their goals faster.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    variant="hero" 
+                    size="xl" 
+                    onClick={() => router.push("/register")}
+                    className="group"
+                  >
+                    Start Free Trial
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="xl"
+                    onClick={() => router.push("/login")}
+                  >
+                    Schedule Demo
+                  </Button>
+                </div>
+
+                <p className="text-sm text-muted-foreground mt-6 flex items-center justify-center gap-4">
+                  <span className="flex items-center gap-1">
+                    <Shield className="h-4 w-4" /> No credit card required
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" /> 14-day free trial
+                  </span>
+                </p>
+              </div>
+            </Card>
+          </FadeUp>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-violet-500 flex items-center justify-center text-white font-bold text-sm">
+                  PT
+                </div>
+                <span className="font-semibold">Progress Tracker</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} Progress Tracker. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

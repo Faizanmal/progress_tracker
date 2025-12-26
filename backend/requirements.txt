@@ -1,15 +1,15 @@
 # Core Django
-Django==5.0.0
-djangorestframework==3.14.0
-django-cors-headers==4.3.1
+Django==5.2.9
+djangorestframework==3.16.1
+django-cors-headers==4.9.0
 
 # Database
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.11
 
 # Authentication
-djangorestframework-simplejwt==5.3.1
-django-allauth==0.57.0
-dj-rest-auth==5.0.2
+djangorestframework-simplejwt==5.5.1
+django-allauth==65.13.1
+dj-rest-auth==7.0.1
 
 # Environment variables
 python-decouple==3.8
@@ -28,9 +28,39 @@ Pillow==10.1.0
 # API documentation
 drf-yasg==1.21.7
 
-# Utilities
-python-dateutil==2.8.2
-pytz==2023.3
-
 # Development
 django-debug-toolbar==4.2.0
+
+# ========== NEW DEPENDENCIES FOR FEATURES ==========
+
+# WebSockets / Real-time (Feature 4)
+channels==4.0.0
+channels-redis==4.1.0
+daphne==4.0.0
+
+# HTTP requests for integrations
+requests==2.31.0
+
+# Calendar integrations (Feature 8)
+google-auth==2.23.4
+google-auth-oauthlib==1.1.0
+google-api-python-client==2.108.0
+msal==1.24.1
+
+# Slack/Teams integrations (Feature 9)
+slack-sdk==3.23.0
+
+# GitHub integration (Feature 10)
+PyGithub==2.1.1
+
+# Voice command processing (Feature 6)
+SpeechRecognition==3.10.0
+
+# ML for predictions (Feature 7, 12)
+scikit-learn==1.3.2
+numpy==1.26.2
+pandas==2.1.3
+
+# Sentiment analysis for burnout detection
+textblob==0.17.1
+

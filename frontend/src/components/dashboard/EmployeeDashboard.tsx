@@ -6,6 +6,7 @@ import { Button } from "@/src/components/ui/button";
 import { Badge, type BadgeProps } from "@/src/components/ui/badge";
 import { Progress } from "@/src/components/ui/progress";
 import { Separator } from "@/src/components/ui/separator";
+import { Skeleton } from "@/src/components/ui/skeloton";
 import { tasksApi, progressApi } from "@/src/lib/api-client";
 import type { Task, ProgressUpdate } from "@/src/types";
 import { AlertCircle, CheckCircle2, Clock, TrendingUp } from "lucide-react";
@@ -79,17 +80,93 @@ export function EmployeeDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <div className="space-y-6 animate-in fade-in-50 duration-500">
+        {/* Stats Cards Skeleton */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16 mb-2" />
+                <Skeleton className="h-3 w-20" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Tasks Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <Skeleton className="h-6 w-32 mb-2" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+              <Skeleton className="h-9 w-20" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="p-4 border rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Skeleton className="h-5 w-48" />
+                    <Skeleton className="h-5 w-16" />
+                    <Skeleton className="h-5 w-12" />
+                  </div>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-2 w-24" />
+                    <Skeleton className="h-4 w-8" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Progress Updates Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <Skeleton className="h-6 w-48 mb-2" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+              <Skeleton className="h-9 w-20" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="border-l-2 border-primary pl-4 py-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in-50 duration-500">
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
@@ -98,7 +175,7 @@ export function EmployeeDashboard() {
             <div className="text-2xl font-bold">{stats.totalTasks}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">In Progress</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -107,7 +184,7 @@ export function EmployeeDashboard() {
             <div className="text-2xl font-bold">{stats.inProgressTasks}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Completed</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -122,7 +199,7 @@ export function EmployeeDashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Overdue</CardTitle>
             <AlertCircle className="h-4 w-4 text-red-500" />
@@ -134,7 +211,7 @@ export function EmployeeDashboard() {
       </div>
 
       {/* My Tasks */}
-      <Card>
+      <Card className="hover:shadow-lg transition-all duration-300">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -151,10 +228,11 @@ export function EmployeeDashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {myTasks.slice(0, 5).map((task) => (
+              {myTasks.slice(0, 5).map((task, index) => (
                 <div
                   key={task.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent cursor-pointer transition-colors"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent hover:shadow-md cursor-pointer transition-all duration-200 hover:scale-[1.01] animate-in slide-in-from-left-5"
+                  style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => router.push(`/tasks/${task.id}`)}
                 >
                   <div className="flex-1">
@@ -210,8 +288,12 @@ export function EmployeeDashboard() {
             </div>
           ) : (
             <div className="space-y-4">
-              {recentUpdates.map((update) => (
-                <div key={update.id} className="border-l-2 border-primary pl-4 py-2">
+              {recentUpdates.map((update, index) => (
+                <div
+                  key={update.id}
+                  className="border-l-2 border-primary pl-4 py-2 hover:bg-accent/50 rounded-r-lg transition-colors animate-in slide-in-from-right-5"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium">
                       {update.task_title || `Task #${update.task}`}

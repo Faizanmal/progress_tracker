@@ -165,7 +165,7 @@ export interface RegisterData {
   email: string;
   name: string;
   password: string;
-  password2: string;
+  password_confirm: string;
   company_name?: string;
   role?: 'admin' | 'manager' | 'employee';
 }
@@ -611,6 +611,391 @@ export interface AIInsightsDashboard {
     recent: AnomalyDetection[];
   };
   summary: WeeklySummary | null;
+}
+
+// ============================================================================
+// NEW FEATURE TYPES
+// ============================================================================
+
+// Workflow Automation Types
+export interface Workflow {
+  id: string;
+  name: string;
+  description?: string;
+  trigger_type: string;
+  trigger_type_display?: string;
+  trigger_config: Record<string, unknown>;
+  project_filter?: string;
+  is_active: boolean;
+  execution_count: number;
+  last_executed?: string;
+  conditions?: WorkflowCondition[];
+  actions?: WorkflowAction[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkflowCondition {
+  id: string;
+  condition_type: string;
+  config: Record<string, unknown>;
+  is_active: boolean;
+}
+
+export interface WorkflowAction {
+  id: string;
+  action_type: string;
+  config: Record<string, unknown>;
+  order: number;
+  is_active: boolean;
+}
+
+export interface WorkflowExecution {
+  id: string;
+  workflow: string;
+  workflow_name?: string;
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
+  trigger_data: Record<string, unknown>;
+  result_data: Record<string, unknown>;
+  started_at: string;
+  completed_at?: string;
+}
+
+// Task Dependency Types (Project Management style - predecessor/successor)
+export interface TaskScheduleDependency {
+  id: string;
+  predecessor: string;
+  predecessor_title?: string;
+  successor: string;
+  successor_title?: string;
+  dependency_type: 'finish_to_start' | 'start_to_start' | 'finish_to_finish' | 'start_to_finish';
+  dependency_type_display?: string;
+  lag_days: number;
+  auto_adjust_dates: boolean;
+  created_at: string;
+}
+
+export interface DependencyBottleneck {
+  id: string;
+  task: string;
+  task_title?: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity_display?: string;
+  blocking_count: number;
+  cascade_delay_days: number;
+  affected_deadline?: string;
+  delay_probability: number;
+  suggested_actions: { action: string; description: string; priority: string }[];
+  is_resolved: boolean;
+  resolved_at?: string;
+  created_at: string;
+}
+
+// Escalation Types
+export interface EscalationRule {
+  id: string;
+  name: string;
+  description?: string;
+  trigger_type: string;
+  trigger_type_display?: string;
+  trigger_after_hours: number;
+  priority_filter?: string;
+  project_filter?: string;
+  escalate_to_manager: boolean;
+  escalate_to_users: string[];
+  send_email: boolean;
+  send_notification: boolean;
+  send_slack: boolean;
+  auto_reassign: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Escalation {
+  id: string;
+  task: string;
+  task_title?: string;
+  rule?: string;
+  status: 'pending' | 'acknowledged' | 'in_progress' | 'resolved' | 'dismissed';
+  status_display?: string;
+  reason: string;
+  suggested_actions: { action: string; description: string }[];
+  escalated_to: string[];
+  escalated_to_names?: string[];
+  resolved_by?: string;
+  resolution_notes?: string;
+  created_at: string;
+  acknowledged_at?: string;
+  resolved_at?: string;
+}
+
+// Calendar Types
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description?: string;
+  event_type: 'task_deadline' | 'meeting' | 'milestone' | 'reminder' | 'external';
+  event_type_display?: string;
+  start_time: string;
+  end_time: string;
+  all_day: boolean;
+  is_recurring: boolean;
+  recurrence_rule?: string;
+  task?: string;
+  task_title?: string;
+  project?: string;
+  project_title?: string;
+  external_id?: string;
+  external_source?: string;
+  external_link?: string;
+  is_synced: boolean;
+  last_synced?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScheduleSuggestion {
+  id: string;
+  task: string;
+  task_title?: string;
+  suggested_start: string;
+  suggested_end: string;
+  reason: string;
+  confidence_score: number;
+  conflicts_avoided: { title: string; start: string; end?: string }[];
+  is_accepted: boolean;
+  is_dismissed: boolean;
+  created_at: string;
+}
+
+// Integration Types
+export interface ChatIntegration {
+  id: string;
+  platform: 'slack' | 'teams' | 'discord';
+  platform_display?: string;
+  workspace_id: string;
+  workspace_name: string;
+  default_channel_id?: string;
+  notify_task_assigned: boolean;
+  notify_task_completed: boolean;
+  notify_daily_standup: boolean;
+  standup_time?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface GitIntegration {
+  id: string;
+  platform: 'github' | 'gitlab' | 'bitbucket';
+  platform_display?: string;
+  organization?: string;
+  sync_issues: boolean;
+  sync_pull_requests: boolean;
+  auto_create_tasks: boolean;
+  auto_update_progress: boolean;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface GitRepository {
+  id: string;
+  integration: string;
+  project: string;
+  repo_id: string;
+  repo_name: string;
+  repo_full_name: string;
+  repo_url: string;
+  sync_enabled: boolean;
+  last_synced?: string;
+  created_at: string;
+}
+
+// Dashboard Types
+export interface PersonalizedDashboard {
+  id: string;
+  name: string;
+  is_default: boolean;
+  layout: DashboardLayoutItem[];
+  auto_refresh: boolean;
+  refresh_interval_seconds: number;
+  widgets?: DashboardWidget[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DashboardLayoutItem {
+  widgetId: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+export interface DashboardWidget {
+  id: string;
+  widget_type: string;
+  widget_type_display?: string;
+  title?: string;
+  position_x: number;
+  position_y: number;
+  width: number;
+  height: number;
+  config: Record<string, unknown>;
+  is_visible: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Burnout Detection Types
+export interface BurnoutIndicator {
+  id: string;
+  user: string;
+  user_name?: string;
+  risk_level: 'low' | 'moderate' | 'high' | 'critical';
+  risk_level_display?: string;
+  risk_score: number;
+  factors: Record<string, unknown>;
+  avg_hours_per_week: number;
+  consecutive_overtime_weeks: number;
+  tasks_overdue: number;
+  no_break_days: number;
+  meeting_hours: number;
+  progress_update_sentiment: number;
+  recommendations: BurnoutRecommendation[];
+  manager_notified: boolean;
+  manager_notified_at?: string;
+  is_addressed: boolean;
+  addressed_at?: string;
+  addressed_notes?: string;
+  created_at: string;
+}
+
+export interface BurnoutRecommendation {
+  category: string;
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface WorkloadSnapshot {
+  id: string;
+  user: string;
+  date: string;
+  active_tasks: number;
+  completed_tasks: number;
+  overdue_tasks: number;
+  blocked_tasks: number;
+  hours_worked: number;
+  meeting_hours: number;
+  overtime_hours: number;
+  tasks_started: number;
+  tasks_completed_on_time: number;
+  progress_updates: number;
+  avg_sentiment_score: number;
+  created_at: string;
+}
+
+// Location-Based Tracking Types
+export interface LocationBasedTracking {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  radius_meters: number;
+  auto_start: boolean;
+  auto_stop: boolean;
+  default_task?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LocationCheckIn {
+  id: string;
+  location_config: string;
+  location_name?: string;
+  check_in_time: string;
+  check_out_time?: string;
+  check_in_lat: number;
+  check_in_lon: number;
+  check_out_lat?: number;
+  check_out_lon?: number;
+  time_entry?: string;
+  created_at: string;
+}
+
+// Voice Command Types
+export interface VoiceCommand {
+  id: string;
+  command_type: string;
+  command_type_display?: string;
+  raw_transcript: string;
+  parsed_intent: Record<string, unknown>;
+  is_successful: boolean;
+  result_message: string;
+  linked_task?: string;
+  created_at: string;
+}
+
+export interface VoiceCommandResult {
+  success: boolean;
+  message: string;
+  task_id?: string;
+  tasks?: { id: string; title: string; status: string }[];
+  active_tasks?: number;
+  completed_today?: number;
+  overdue_tasks?: number;
+}
+
+// Resource Allocation Types
+export interface ResourceAllocationSuggestion {
+  id: string;
+  suggestion_type: 'reassign' | 'redistribute' | 'hire' | 'skill_gap' | 'overload';
+  suggestion_type_display?: string;
+  task?: string;
+  task_title?: string;
+  from_user?: string;
+  from_user_name?: string;
+  to_user?: string;
+  to_user_name?: string;
+  reason: string;
+  impact_score: number;
+  confidence_score: number;
+  supporting_data: Record<string, unknown>;
+  is_applied: boolean;
+  is_dismissed: boolean;
+  applied_at?: string;
+  applied_by?: string;
+  created_at: string;
+}
+
+export interface AssigneeRecommendation {
+  user_id: string;
+  user_name: string;
+  score: number;
+  factors: Record<string, {
+    value: string | number;
+    score: number;
+    weight: number;
+  }>;
+}
+
+// WebSocket Event Types
+export interface WebSocketTaskEvent {
+  type: 'task_updated' | 'user_joined' | 'user_left' | 'typing' | 'cursor' | 'comment';
+  task_id: string;
+  user_id?: string;
+  user_name?: string;
+  field?: string;
+  value?: unknown;
+  timestamp?: string;
+}
+
+export interface WebSocketNotificationEvent {
+  type: 'notification' | 'initial';
+  notification?: Notification;
+  unread_count?: number;
 }
 
 // Integrations

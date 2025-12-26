@@ -1,4 +1,4 @@
-from rest_framework import status, generics, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -11,7 +11,7 @@ from .serializers import (
     NotificationPreferenceSerializer, WebhookIntegrationSerializer,
     CalendarIntegrationSerializer
 )
-from .permissions import IsAdmin, IsManager, CanManageCompany, CanManageUsers
+from .permissions import IsAdmin, CanManageCompany, CanManageUsers
 
 User = get_user_model()
 
@@ -20,6 +20,7 @@ User = get_user_model()
 @permission_classes([AllowAny])
 def register(request):
     """Register a new user."""
+    print("Registration request data:", request.data)  # Debug log
     serializer = UserCreateSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -33,6 +34,7 @@ def register(request):
             }
         }, status=status.HTTP_201_CREATED)
     
+    print("Serializer errors:", serializer.errors)  # Debug log
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

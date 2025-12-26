@@ -3,10 +3,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Sum, Avg, Count, F, Q
+from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncDate, TruncWeek
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import timedelta
 from .models import (
     TimeEntry, Report, ReportSnapshot, Timesheet,
     ProjectTemplate, TaskDependency, Milestone
@@ -18,7 +18,7 @@ from .serializers import (
 )
 from tasks.models import Task
 from projects.models import Project
-from users.permissions import IsManager, IsAdmin
+from users.permissions import IsManager
 
 
 class TimeEntryViewSet(viewsets.ModelViewSet):

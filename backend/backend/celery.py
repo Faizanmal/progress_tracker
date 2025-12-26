@@ -35,6 +35,59 @@ app.conf.beat_schedule = {
         'task': 'tasks.tasks.notify_blocked_tasks',
         'schedule': crontab(minute=0, hour='*/2'),
     },
+    
+    # ========== NEW AUTOMATION TASKS ==========
+    
+    # Check overdue tasks and trigger escalations every hour
+    'check-overdue-escalations': {
+        'task': 'automation.tasks.check_overdue_and_escalate',
+        'schedule': crontab(minute=0),  # Every hour
+    },
+    # Check blocked tasks and escalate every 2 hours
+    'check-blocked-escalations': {
+        'task': 'automation.tasks.check_blocked_and_escalate',
+        'schedule': crontab(minute=30, hour='*/2'),
+    },
+    # Detect bottlenecks daily at 8 AM
+    'detect-bottlenecks': {
+        'task': 'automation.tasks.detect_bottlenecks',
+        'schedule': crontab(hour=8, minute=0),
+    },
+    # Analyze burnout risk weekly on Monday
+    'analyze-burnout': {
+        'task': 'automation.tasks.analyze_team_burnout',
+        'schedule': crontab(hour=6, minute=0, day_of_week=1),
+    },
+    # Capture workload snapshots daily at midnight
+    'capture-workload-snapshots': {
+        'task': 'automation.tasks.capture_workload_snapshots',
+        'schedule': crontab(hour=0, minute=5),
+    },
+    # Generate resource suggestions daily
+    'generate-resource-suggestions': {
+        'task': 'automation.tasks.generate_resource_suggestions',
+        'schedule': crontab(hour=7, minute=0),
+    },
+    # Send daily standup messages at 9 AM
+    'daily-standup-messages': {
+        'task': 'automation.tasks.send_daily_standup_messages',
+        'schedule': crontab(hour=9, minute=0),
+    },
+    # Check approaching deadlines every 4 hours
+    'check-deadline-approaching': {
+        'task': 'automation.tasks.check_deadline_approaching',
+        'schedule': crontab(minute=0, hour='*/4'),
+    },
+    # Run scheduled workflows every minute
+    'run-scheduled-workflows': {
+        'task': 'automation.tasks.run_scheduled_workflows',
+        'schedule': crontab(minute='*'),
+    },
+    # Sync calendar events every 15 minutes
+    'sync-calendar-events': {
+        'task': 'automation.tasks.sync_calendar_events',
+        'schedule': crontab(minute='*/15'),
+    },
 }
 
 @app.task(bind=True)

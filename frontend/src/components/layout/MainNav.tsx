@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/src/components/ui/badge";
 import { Bell, Menu, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
+import { ThemeToggle } from "@/src/components/ui/theme-toggle";
 
 interface NavItem {
   label: string;
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { label: "Tasks", href: "/tasks", roles: ["admin", "manager", "employee"] },
   { label: "Progress", href: "/progress", roles: ["admin", "manager", "employee"] },
   { label: "Time Tracking", href: "/time-tracking", roles: ["admin", "manager", "employee"] },
+  { label: "Automation", href: "/automation", roles: ["admin", "manager", "employee"] },
   { label: "Analytics", href: "/analytics", roles: ["admin", "manager"] },
   { label: "AI Insights", href: "/ai-insights", roles: ["admin", "manager"] },
   { label: "Team", href: "/team", roles: ["admin", "manager"] },
@@ -97,6 +99,9 @@ export function MainNav() {
 
           {/* Right Side - Notifications and User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Notifications */}
             <Button variant="ghost" size="icon" onClick={() => router.push("/notifications")}>
               <Bell className="h-5 w-5" />

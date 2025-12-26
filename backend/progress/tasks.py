@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.db.models import Avg, Sum, Count
+from django.db.models import Avg, Sum
 from datetime import timedelta
 
 User = get_user_model()
@@ -12,11 +12,8 @@ User = get_user_model()
 @shared_task
 def send_weekly_progress_summary():
     """Send weekly progress summary to managers."""
-    from progress.models import ProgressUpdate
-    from tasks.models import Task
     
     managers = User.objects.filter(role__in=['manager', 'admin'], is_active=True)
-    week_ago = timezone.now() - timedelta(days=7)
     
     for manager in managers:
         send_manager_weekly_summary.delay(manager.id)

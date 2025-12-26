@@ -20,7 +20,7 @@ export default function RegisterPage() {
     email: "",
     name: "",
     password: "",
-    password2: "",
+    password_confirm: "",
     company_name: "",
     role: "employee" as "admin" | "manager" | "employee",
   });
@@ -34,7 +34,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password !== formData.password2) {
+    if (formData.password !== formData.password_confirm) {
       toast.error("Passwords don't match");
       return;
     }
@@ -53,13 +53,13 @@ export default function RegisterPage() {
         toast.success("Account created successfully!");
         router.push("/dashboard");
       } else {
-        if (typeof result.error === 'object') {
+        if (typeof result.error === 'object' && result.error !== null) {
           const errors = Object.entries(result.error).map(([key, value]) => 
-            `${key}: ${Array.isArray(value) ? value.join(', ') : value}`
+            `${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`
           ).join('\n');
-          toast.error(errors);
+          toast.error(errors || "Registration failed. Please try again.");
         } else {
-          toast.error(result.error || "Registration failed. Please try again.");
+          toast.error(typeof result.error === 'string' ? result.error : "Registration failed. Please try again.");
         }
       }
     } catch (error: any) {
@@ -161,13 +161,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password2">Confirm Password</Label>
+              <Label htmlFor="password_confirm">Confirm Password</Label>
               <Input
-                id="password2"
+                id="password_confirm"
                 type="password"
                 placeholder="••••••••"
-                value={formData.password2}
-                onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
+                value={formData.password_confirm}
+                onChange={(e) => setFormData({ ...formData, password_confirm: e.target.value })}
                 required
                 disabled={loading}
               />

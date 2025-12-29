@@ -214,7 +214,7 @@ export default function FormEditorPage() {
                             <Label>Type</Label>
                             <Select
                               value={field.type}
-                              onValueChange={(value: any) => updateField(index, { type: value })}
+                              onValueChange={(value: string) => updateField(index, { type: value })}
                             >
                               <SelectTrigger>
                                 <SelectValue />

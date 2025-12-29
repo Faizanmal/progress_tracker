@@ -39,6 +39,10 @@ import {
   ChevronRight,
   Search,
   Command,
+  Wallet,
+  Building2,
+  Shield,
+  Flag,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 
@@ -57,10 +61,14 @@ const navItems: NavItem[] = [
   { label: "Progress", href: "/progress", icon: TrendingUp, roles: ["admin", "manager", "employee"] },
   { label: "Time Tracking", href: "/time-tracking", icon: Clock, roles: ["admin", "manager", "employee"] },
   { label: "Automation", href: "/automation", icon: Zap, roles: ["admin", "manager", "employee"] },
+  { label: "Resources", href: "/resources", icon: Wallet, roles: ["admin", "manager"] },
+  { label: "Milestones", href: "/milestones", icon: Flag, roles: ["admin", "manager"] },
   { label: "Analytics", href: "/analytics", icon: BarChart3, roles: ["admin", "manager"] },
   { label: "AI Insights", href: "/ai-insights", icon: Sparkles, roles: ["admin", "manager"] },
   { label: "Team", href: "/team", icon: Users, roles: ["admin", "manager"] },
   { label: "Reports", href: "/reports", icon: FileText, roles: ["admin", "manager"] },
+  { label: "Audit", href: "/audit", icon: Shield, roles: ["admin"] },
+  { label: "Organization", href: "/organization", icon: Building2, roles: ["admin"] },
   { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "manager", "employee"] },
 ];
 

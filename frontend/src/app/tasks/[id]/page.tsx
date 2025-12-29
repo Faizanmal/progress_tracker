@@ -208,7 +208,7 @@ export default function TaskDetailPage() {
                       <Label htmlFor="status">Status</Label>
                       <Select
                         value={progressForm.status}
-                        onValueChange={(value: any) =>
+                        onValueChange={(value: string) =>
                           setProgressForm({ ...progressForm, status: value })
                         }
                       >

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { formsApi, integrationsApi } from "@/src/lib/api-client";
-import type { Form, NotificationIntegration } from "@/src/types";
+import type { Form, NotificationIntegration, WebhookLog } from "@/src/types";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
@@ -22,7 +22,7 @@ export default function FormIntegrationsPage() {
 
   const [form, setForm] = useState<Form | null>(null);
   const [integrations, setIntegrations] = useState<NotificationIntegration[]>([]);
-  const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
+  const [webhookLogs, setWebhookLogs] = useState<WebhookLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [connectingSheets, setConnectingSheets] = useState(false);
 
@@ -361,7 +361,7 @@ is_valid = verify_webhook(
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {webhookLogs.map((log: any) => (
+                    {webhookLogs.map((log: WebhookLog) => (
                       <TableRow key={log.id}>
                         <TableCell className="text-sm">
                           {new Date(log.created_at).toLocaleString()}

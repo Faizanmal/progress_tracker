@@ -126,7 +126,7 @@ function NotificationSettings() {
             <Label>Email Frequency</Label>
             <Select 
               value={preferences.email_frequency} 
-              onValueChange={(value: any) => setPreferences({...preferences, email_frequency: value})}
+              onValueChange={(value: string) => setPreferences({...preferences, email_frequency: value as "daily" | "weekly" | "immediate" | "hourly" | "never"})}
             >
               <SelectTrigger className="w-[200px]">
                 <SelectValue />

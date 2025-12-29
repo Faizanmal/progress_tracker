@@ -1,7 +1,7 @@
 /**
  * API Client for Progress Tracker Backend
  */
-import axios, { AxiosInstance, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
 import type { User } from '../types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
@@ -44,12 +44,15 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as any;
+    interface RetriableAxiosRequestConfig extends AxiosRequestConfig {
+      _retry?: boolean;
+    }
+    const originalRequest = error.config as RetriableAxiosRequestConfig;
 
     // Handle rate limiting (429)
     if (error.response?.status === 429) {
-      const retryAfter = (error.response.data as any)?.retry_after || 60;
-      const message = (error.response.data as any)?.message || 'Too many requests. Please try again later.';
+      const retryAfter = (error.response?.data as Record<string, unknown>)?.retry_after || 60;
+      const message = (error.response?.data as Record<string, unknown>)?.message || 'Too many requests. Please try again later.';
       
       // You can integrate with your toast/notification system here
       console.warn(`Rate limit exceeded: ${message}`);
@@ -646,7 +649,7 @@ export const integrationsAPI = {
     return response.data;
   },
 
-  completeGoogleOAuth: async (data: any) => {
+  completeGoogleOAuth: async (data: unknown) => {
     const response = await apiClient.post('/integrations/google/complete/', data);
     return response.data;
   },

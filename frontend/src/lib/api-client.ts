@@ -13,7 +13,11 @@ import type {
   RegisterData,
   AuthTokens,
   DashboardData,
-  TeamProgressSummary
+  TeamProgressSummary,
+  FormSchema,
+  Form,
+  Report,
+  TaskTemplate
 } from '../types';
 
 // Re-export meeting templates and integrations from api
@@ -250,6 +254,17 @@ export const notificationPreferencesApi = {
 };
 
 // Webhooks API (Admin only)
+type WebhookData = {
+  name: string;
+  integration_type: string;
+  webhook_url: string;
+  notify_task_assigned?: boolean;
+  notify_task_blocked?: boolean;
+  notify_task_completed?: boolean;
+  notify_progress_update?: boolean;
+  notify_milestone?: boolean;
+};
+
 export const webhooksApi = {
   list: async () => {
     const response = await apiClient.get('/webhooks/');
@@ -261,21 +276,12 @@ export const webhooksApi = {
     return response.data;
   },
 
-  create: async (data: {
-    name: string;
-    integration_type: string;
-    webhook_url: string;
-    notify_task_assigned?: boolean;
-    notify_task_blocked?: boolean;
-    notify_task_completed?: boolean;
-    notify_progress_update?: boolean;
-    notify_milestone?: boolean;
-  }) => {
+  create: async (data: WebhookData) => {
     const response = await apiClient.post('/webhooks/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: Partial<WebhookData>) => {
     const response = await apiClient.patch(`/webhooks/${id}/`, data);
     return response.data;
   },
@@ -296,6 +302,15 @@ export const webhooksApi = {
 };
 
 // Calendar Integrations API
+type CalendarIntegrationData = {
+  calendar_type: string;
+  access_token?: string;
+  refresh_token?: string;
+  sync_tasks?: boolean;
+  sync_deadlines?: boolean;
+  sync_milestones?: boolean;
+};
+
 export const calendarApi = {
   list: async () => {
     const response = await apiClient.get('/calendar-integrations/');
@@ -307,19 +322,12 @@ export const calendarApi = {
     return response.data;
   },
 
-  create: async (data: {
-    calendar_type: string;
-    access_token?: string;
-    refresh_token?: string;
-    sync_tasks?: boolean;
-    sync_deadlines?: boolean;
-    sync_milestones?: boolean;
-  }) => {
+  create: async (data: CalendarIntegrationData) => {
     const response = await apiClient.post('/calendar-integrations/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: Partial<CalendarIntegrationData>) => {
     const response = await apiClient.patch(`/calendar-integrations/${id}/`, data);
     return response.data;
   },
@@ -366,7 +374,7 @@ export const usersApi = {
     return response.data;
   },
   
-  getTeamProgress: async (): Promise<any> => {
+  getTeamProgress: async (): Promise<TeamProgressSummary> => {
     const response = await apiClient.get('/users/team_progress/');
     return response.data;
   },
@@ -392,9 +400,18 @@ export const companyApi = {
   },
 };
 
+// Forms API Types
+type FormCreate = {
+  title?: string;
+  description?: string;
+  schema_json?: FormSchema;
+  prompt?: string;
+  context?: string;
+};
+
 // Forms API (FormForge integration)
 export const formsApi = {
-  list: async (): Promise<any[]> => {
+  list: async (): Promise<Form[]> => {
     const response = await apiClient.get('/forms/');
     return response.data.results || response.data;
   },
@@ -404,12 +421,12 @@ export const formsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: FormCreate) => {
     const response = await apiClient.post('/forms/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: Partial<FormCreate>) => {
     const response = await apiClient.patch(`/forms/${id}/`, data);
     return response.data;
   },
@@ -432,11 +449,50 @@ export const submissionsApi = {
     return response.data.results || response.data;
   },
 
-  submit: async (slugOrId: string, payload: Record<string, any>) => {
+  submit: async (slugOrId: string, payload: Record<string, unknown>) => {
     // Accept slug or id for submit endpoint
     const response = await apiClient.post(`/forms/submit/${slugOrId}/`, payload);
     return response.data;
   },
+};
+
+// Analytics API Types
+type TimesheetParams = {
+  user?: string;
+  week_start?: string;
+  status?: string;
+  [key: string]: unknown;
+};
+
+type ReportCreate = {
+  name: string;
+  description?: string;
+  report_type: Report['report_type'];
+  config: Record<string, unknown>;
+  frequency: Report['frequency'];
+  recipients: string[];
+  send_email: boolean;
+};
+
+type ProjectTemplateCreate = {
+  name: string;
+  description?: string;
+  category?: string;
+  default_status: string;
+  default_priority: string;
+  estimated_duration_days: number;
+  task_templates: TaskTemplate[];
+  workflow_stages: string[];
+  settings?: Record<string, unknown>;
+  is_public?: boolean;
+};
+
+type MilestoneCreate = {
+  project: string;
+  title: string;
+  description?: string;
+  due_date: string;
+  tasks: string[];
 };
 
 // Analytics API
@@ -474,7 +530,7 @@ export const analyticsApi = {
   },
 
   // Timesheets
-  getTimesheets: async (params?: any) => {
+  getTimesheets: async (params?: TimesheetParams) => {
     const response = await apiClient.get('/analytics/timesheets/', { params });
     return response.data.results || response.data;
   },
@@ -510,7 +566,7 @@ export const analyticsApi = {
     return response.data;
   },
 
-  createReport: async (data: any) => {
+  createReport: async (data: ReportCreate) => {
     const response = await apiClient.post('/analytics/reports/', data);
     return response.data;
   },
@@ -538,7 +594,7 @@ export const analyticsApi = {
   },
 
   // Project Templates
-  createProjectTemplate: async (data: any) => {
+  createProjectTemplate: async (data: ProjectTemplateCreate) => {
     const response = await apiClient.post('/analytics/templates/', data);
     return response.data;
   },
@@ -588,7 +644,7 @@ export const analyticsApi = {
     return response.data.results || response.data;
   },
 
-  createMilestone: async (data: any) => {
+  createMilestone: async (data: MilestoneCreate) => {
     const response = await apiClient.post('/analytics/milestones/', data);
     return response.data;
   },
@@ -696,12 +752,12 @@ export const workflowsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: unknown) => {
     const response = await apiClient.post('/automation/workflows/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/workflows/${id}/`, data);
     return response.data;
   },
@@ -715,7 +771,7 @@ export const workflowsApi = {
     return response.data;
   },
 
-  test: async (id: string, testData?: any) => {
+  test: async (id: string, testData?: unknown) => {
     const response = await apiClient.post(`/automation/workflows/${id}/test/`, testData);
     return response.data;
   },
@@ -745,7 +801,7 @@ export const dependenciesApi = {
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/task-dependencies/${id}/`, data);
     return response.data;
   },
@@ -784,12 +840,12 @@ export const escalationsApi = {
     return response.data;
   },
 
-  createRule: async (data: any) => {
+  createRule: async (data: unknown) => {
     const response = await apiClient.post('/automation/escalation-rules/', data);
     return response.data;
   },
 
-  updateRule: async (id: string, data: any) => {
+  updateRule: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/escalation-rules/${id}/`, data);
     return response.data;
   },
@@ -842,12 +898,12 @@ export const calendarEventsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: unknown) => {
     const response = await apiClient.post('/automation/calendar-events/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/calendar-events/${id}/`, data);
     return response.data;
   },
@@ -889,12 +945,12 @@ export const chatIntegrationsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: unknown) => {
     const response = await apiClient.post('/automation/chat-integrations/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/chat-integrations/${id}/`, data);
     return response.data;
   },
@@ -908,7 +964,7 @@ export const chatIntegrationsApi = {
     return response.data;
   },
 
-  handleWebhook: async (platform: string, data: any) => {
+  handleWebhook: async (platform: string, data: unknown) => {
     const response = await apiClient.post(`/automation/chat-integrations/webhook/${platform}/`, data);
     return response.data;
   },
@@ -926,12 +982,12 @@ export const gitIntegrationsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: unknown) => {
     const response = await apiClient.post('/automation/git-integrations/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/git-integrations/${id}/`, data);
     return response.data;
   },
@@ -956,7 +1012,7 @@ export const gitIntegrationsApi = {
     return response.data;
   },
 
-  handleWebhook: async (platform: string, data: any) => {
+  handleWebhook: async (platform: string, data: unknown) => {
     const response = await apiClient.post(`/automation/git-integrations/webhook/${platform}/`, data);
     return response.data;
   },
@@ -974,12 +1030,12 @@ export const dashboardsApi = {
     return response.data;
   },
 
-  create: async (data: any) => {
+  create: async (data: unknown) => {
     const response = await apiClient.post('/automation/personalized-dashboards/', data);
     return response.data;
   },
 
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/personalized-dashboards/${id}/`, data);
     return response.data;
   },
@@ -993,12 +1049,12 @@ export const dashboardsApi = {
     return response.data;
   },
 
-  addWidget: async (dashboardId: string, data: any) => {
+  addWidget: async (dashboardId: string, data: Record<string, unknown>) => {
     const response = await apiClient.post('/automation/dashboard-widgets/', { dashboard: dashboardId, ...data });
     return response.data;
   },
 
-  updateWidget: async (widgetId: string, data: any) => {
+  updateWidget: async (widgetId: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/dashboard-widgets/${widgetId}/`, data);
     return response.data;
   },
@@ -1037,7 +1093,7 @@ export const burnoutApi = {
   },
 
   getWorkloadSnapshots: async (userId?: string, days?: number) => {
-    const params: any = {};
+    const params: Record<string, unknown> = {};
     if (userId) params.user = userId;
     if (days) params.days = days;
     const response = await apiClient.get('/automation/workload-snapshots/', { params });
@@ -1063,12 +1119,12 @@ export const locationTrackingApi = {
     return response.data;
   },
 
-  createLocation: async (data: any) => {
+  createLocation: async (data: unknown) => {
     const response = await apiClient.post('/automation/location-configs/', data);
     return response.data;
   },
 
-  updateLocation: async (id: string, data: any) => {
+  updateLocation: async (id: string, data: unknown) => {
     const response = await apiClient.patch(`/automation/location-configs/${id}/`, data);
     return response.data;
   },
@@ -1153,6 +1209,385 @@ export const resourceAllocationApi = {
 
   getWorkloadAnalysis: async () => {
     const response = await apiClient.get('/automation/resource-suggestions/workload_analysis/');
+    return response.data;
+  },
+};
+
+// Resources - Allocations API
+export const resourcesApi = {
+  // Allocations
+  getAllocations: async (params?: { project?: string; user?: string; status?: string }) => {
+    const response = await apiClient.get('/resources/allocations/', { params });
+    return response.data.results || response.data;
+  },
+
+  getAllocation: async (id: string) => {
+    const response = await apiClient.get(`/resources/allocations/${id}/`);
+    return response.data;
+  },
+
+  createAllocation: async (data: unknown) => {
+    const response = await apiClient.post('/resources/allocations/', data);
+    return response.data;
+  },
+
+  updateAllocation: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/resources/allocations/${id}/`, data);
+    return response.data;
+  },
+
+  deleteAllocation: async (id: string) => {
+    await apiClient.delete(`/resources/allocations/${id}/`);
+  },
+
+  // Capacity
+  getCapacity: async (params?: { user?: string }) => {
+    const response = await apiClient.get('/resources/capacity/', { params });
+    return response.data.results || response.data;
+  },
+
+  updateCapacity: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/resources/capacity/${id}/`, data);
+    return response.data;
+  },
+
+  // Capacity Warnings
+  getCapacityWarnings: async (params?: { status?: string; severity?: string }) => {
+    const response = await apiClient.get('/resources/capacity-warnings/', { params });
+    return response.data.results || response.data;
+  },
+
+  acknowledgeWarning: async (id: string) => {
+    const response = await apiClient.post(`/resources/capacity-warnings/${id}/acknowledge/`);
+    return response.data;
+  },
+
+  resolveWarning: async (id: string) => {
+    const response = await apiClient.post(`/resources/capacity-warnings/${id}/resolve/`);
+    return response.data;
+  },
+
+  // Budgets
+  getBudgets: async (params?: { project?: string }) => {
+    const response = await apiClient.get('/resources/budgets/', { params });
+    return response.data.results || response.data;
+  },
+
+  getBudget: async (id: string) => {
+    const response = await apiClient.get(`/resources/budgets/${id}/`);
+    return response.data;
+  },
+
+  createBudget: async (data: unknown) => {
+    const response = await apiClient.post('/resources/budgets/', data);
+    return response.data;
+  },
+
+  updateBudget: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/resources/budgets/${id}/`, data);
+    return response.data;
+  },
+
+  // Expenses
+  getExpenses: async (params?: { budget?: string; category?: string }) => {
+    const response = await apiClient.get('/resources/expenses/', { params });
+    return response.data.results || response.data;
+  },
+
+  createExpense: async (data: unknown) => {
+    const response = await apiClient.post('/resources/expenses/', data);
+    return response.data;
+  },
+
+  updateExpense: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/resources/expenses/${id}/`, data);
+    return response.data;
+  },
+
+  deleteExpense: async (id: string) => {
+    await apiClient.delete(`/resources/expenses/${id}/`);
+  },
+
+  // Budget Alerts
+  getBudgetAlerts: async (params?: { status?: string }) => {
+    const response = await apiClient.get('/resources/budget-alerts/', { params });
+    return response.data.results || response.data;
+  },
+
+  acknowledgeBudgetAlert: async (id: string) => {
+    const response = await apiClient.post(`/resources/budget-alerts/${id}/acknowledge/`);
+    return response.data;
+  },
+
+  // Variance Reports
+  getVarianceReports: async (params?: { project?: string }) => {
+    const response = await apiClient.get('/resources/variance-reports/', { params });
+    return response.data.results || response.data;
+  },
+
+  generateVarianceReport: async (budgetId: string) => {
+    const response = await apiClient.post('/resources/variance-reports/', { budget: budgetId });
+    return response.data;
+  },
+};
+
+// Custom Dashboards API (dashboards app)
+export const customDashboardsApi = {
+  // Dashboards
+  list: async () => {
+    const response = await apiClient.get('/dashboards/dashboards/');
+    return response.data.results || response.data;
+  },
+
+  get: async (id: string) => {
+    const response = await apiClient.get(`/dashboards/dashboards/${id}/`);
+    return response.data;
+  },
+
+  create: async (data: unknown) => {
+    const response = await apiClient.post('/dashboards/dashboards/', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/dashboards/dashboards/${id}/`, data);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    await apiClient.delete(`/dashboards/dashboards/${id}/`);
+  },
+
+  // Widgets
+  getWidgets: async (dashboardId?: string) => {
+    const params = dashboardId ? { dashboard: dashboardId } : {};
+    const response = await apiClient.get('/dashboards/widgets/', { params });
+    return response.data.results || response.data;
+  },
+
+  createWidget: async (data: unknown) => {
+    const response = await apiClient.post('/dashboards/widgets/', data);
+    return response.data;
+  },
+
+  updateWidget: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/dashboards/widgets/${id}/`, data);
+    return response.data;
+  },
+
+  deleteWidget: async (id: string) => {
+    await apiClient.delete(`/dashboards/widgets/${id}/`);
+  },
+
+  // Widget Templates
+  getWidgetTemplates: async () => {
+    const response = await apiClient.get('/dashboards/widget-templates/');
+    return response.data.results || response.data;
+  },
+
+  // Dashboard Templates
+  getDashboardTemplates: async () => {
+    const response = await apiClient.get('/dashboards/dashboard-templates/');
+    return response.data.results || response.data;
+  },
+
+  createFromTemplate: async (templateId: string, name: string) => {
+    const response = await apiClient.post(`/dashboards/dashboard-templates/${templateId}/create_dashboard/`, { name });
+    return response.data;
+  },
+};
+
+// Audit API
+export const auditApi = {
+  // Audit Logs
+  getLogs: async (params?: { 
+    action?: string; 
+    model_type?: string; 
+    user?: string;
+    start_date?: string;
+    end_date?: string;
+  }) => {
+    const response = await apiClient.get('/audit/logs/', { params });
+    return response.data.results || response.data;
+  },
+
+  getLog: async (id: string) => {
+    const response = await apiClient.get(`/audit/logs/${id}/`);
+    return response.data;
+  },
+
+  // Snapshots
+  getSnapshots: async (params?: { model_type?: string; object_id?: string }) => {
+    const response = await apiClient.get('/audit/snapshots/', { params });
+    return response.data.results || response.data;
+  },
+
+  getSnapshot: async (id: string) => {
+    const response = await apiClient.get(`/audit/snapshots/${id}/`);
+    return response.data;
+  },
+
+  compareSnapshots: async (id1: string, id2: string) => {
+    const response = await apiClient.get(`/audit/snapshots/${id1}/compare/`, { params: { compare_to: id2 } });
+    return response.data;
+  },
+
+  // Saved Searches
+  getSavedSearches: async () => {
+    const response = await apiClient.get('/audit/saved-searches/');
+    return response.data.results || response.data;
+  },
+
+  createSavedSearch: async (data: unknown) => {
+    const response = await apiClient.post('/audit/saved-searches/', data);
+    return response.data;
+  },
+
+  deleteSavedSearch: async (id: string) => {
+    await apiClient.delete(`/audit/saved-searches/${id}/`);
+  },
+
+  runSavedSearch: async (id: string) => {
+    const response = await apiClient.get(`/audit/saved-searches/${id}/run/`);
+    return response.data;
+  },
+};
+
+// Tenants API
+export const tenantsApi = {
+  // Tenants
+  list: async () => {
+    const response = await apiClient.get('/tenants/tenants/');
+    return response.data.results || response.data;
+  },
+
+  get: async (id: string) => {
+    const response = await apiClient.get(`/tenants/tenants/${id}/`);
+    return response.data;
+  },
+
+  update: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/tenants/tenants/${id}/`, data);
+    return response.data;
+  },
+
+  // Branding
+  getBranding: async () => {
+    const response = await apiClient.get('/tenants/branding/');
+    return response.data.results?.[0] || response.data[0] || null;
+  },
+
+  updateBranding: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/tenants/branding/${id}/`, data);
+    return response.data;
+  },
+
+  // Invitations
+  getInvitations: async (params?: { status?: string }) => {
+    const response = await apiClient.get('/tenants/invitations/', { params });
+    return response.data.results || response.data;
+  },
+
+  createInvitation: async (data: { email: string; role?: string }) => {
+    const response = await apiClient.post('/tenants/invitations/', data);
+    return response.data;
+  },
+
+  resendInvitation: async (id: string) => {
+    const response = await apiClient.post(`/tenants/invitations/${id}/resend/`);
+    return response.data;
+  },
+
+  cancelInvitation: async (id: string) => {
+    const response = await apiClient.post(`/tenants/invitations/${id}/cancel/`);
+    return response.data;
+  },
+
+  acceptInvitation: async (token: string, userData: Record<string, unknown>) => {
+    const response = await apiClient.post('/tenants/invitations/accept/', { token, ...userData });
+    return response.data;
+  },
+
+  // Admin Logs
+  getAdminLogs: async (params?: { action?: string }) => {
+    const response = await apiClient.get('/tenants/admin-logs/', { params });
+    return response.data.results || response.data;
+  },
+
+  // Usage Stats
+  getUsageStats: async () => {
+    const response = await apiClient.get('/tenants/usage-stats/');
+    return response.data.results || response.data;
+  },
+
+  getCurrentUsage: async () => {
+    const response = await apiClient.get('/tenants/usage-stats/current/');
+    return response.data;
+  },
+};
+
+// Advanced Notifications API
+export const advancedNotificationsApi = {
+  // Notification Rules
+  getRules: async () => {
+    const response = await apiClient.get('/notifications/rules/');
+    return response.data.results || response.data;
+  },
+
+  createRule: async (data: unknown) => {
+    const response = await apiClient.post('/notifications/rules/', data);
+    return response.data;
+  },
+
+  updateRule: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/notifications/rules/${id}/`, data);
+    return response.data;
+  },
+
+  deleteRule: async (id: string) => {
+    await apiClient.delete(`/notifications/rules/${id}/`);
+  },
+
+  // Notification Deliveries
+  getDeliveries: async (params?: { status?: string; channel?: string }) => {
+    const response = await apiClient.get('/notifications/deliveries/', { params });
+    return response.data.results || response.data;
+  },
+
+  // SMS Configuration
+  getSMSConfig: async () => {
+    const response = await apiClient.get('/notifications/sms-config/');
+    return response.data.results?.[0] || response.data[0] || null;
+  },
+
+  updateSMSConfig: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/notifications/sms-config/${id}/`, data);
+    return response.data;
+  },
+
+  // Push Subscriptions
+  getPushSubscriptions: async () => {
+    const response = await apiClient.get('/notifications/push-subscriptions/');
+    return response.data.results || response.data;
+  },
+
+  createPushSubscription: async (data: unknown) => {
+    const response = await apiClient.post('/notifications/push-subscriptions/', data);
+    return response.data;
+  },
+
+  deletePushSubscription: async (id: string) => {
+    await apiClient.delete(`/notifications/push-subscriptions/${id}/`);
+  },
+
+  // Digests
+  getDigests: async () => {
+    const response = await apiClient.get('/notifications/digests/');
+    return response.data.results || response.data;
+  },
+
+  updateDigestSettings: async (id: string, data: unknown) => {
+    const response = await apiClient.patch(`/notifications/digests/${id}/`, data);
     return response.data;
   },
 };

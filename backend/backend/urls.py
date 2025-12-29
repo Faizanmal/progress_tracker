@@ -57,6 +57,15 @@ urlpatterns = [
     path('api/analytics/', include('analytics.urls')),
     path('api/ai/', include('ai_insights.urls')),
     path('api/automation/', include('automation.urls')),
+    
+    # New feature URLs
+    path('api/integrations/', include('integrations.urls')),
+    path('api/resources/', include('resources.urls')),
+    path('api/dashboards/', include('dashboards.urls')),
+    path('api/audit/', include('audit.urls')),
+    path('api/notifications/', include('notifications.urls')),
+    path('api/tenants/', include('tenants.urls')),
+    path('api/', include('forms.urls')),
 ]
 
 # Serve media files in development

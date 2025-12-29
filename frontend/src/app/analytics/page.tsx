@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { analyticsApi } from '@/src/lib/api-client';
 import { useAuth } from '@/src/hooks/use-auth';
-import type { AnalyticsDashboard } from '../../types';
+import type { AnalyticsDashboard, Report } from '../../types';
 
 interface TimeSummary {
   total_hours: number;
@@ -356,7 +356,7 @@ export default function AnalyticsPage() {
 }
 
 function ReportsSection() {
-  const [reports, setReports] = useState<any[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

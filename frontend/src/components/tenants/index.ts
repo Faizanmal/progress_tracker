@@ -1,0 +1,1 @@
+export { TenantSettings } from './TenantSettings';

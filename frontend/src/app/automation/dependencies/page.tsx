@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { AxiosError } from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
@@ -87,8 +88,9 @@ export default function DependenciesPage() {
       setShowCreateDialog(false);
       resetForm();
       fetchData();
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to create dependency');
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      toast.error(String((axiosError.response?.data as Record<string, unknown>)?.error) || 'Failed to create dependency');
     }
   };
 

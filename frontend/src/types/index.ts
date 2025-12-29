@@ -541,6 +541,18 @@ export interface WebhookIntegration {
   updated_at: string;
 }
 
+export interface WebhookLog {
+  id: string;
+  webhook_integration: string;
+  status: 'success' | 'failed' | 'pending' | 'retrying';
+  request_data: Record<string, unknown>;
+  response_data?: Record<string, unknown>;
+  response_status_code?: number;
+  error_message?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CalendarIntegration {
   id: string;
   user: string;
@@ -832,7 +844,7 @@ export interface DashboardLayoutItem {
   h: number;
 }
 
-export interface DashboardWidget {
+export interface DashboardWidgetItem {
   id: string;
   widget_type: string;
   widget_type_display?: string;
@@ -1017,4 +1029,1058 @@ export interface NotificationIntegration {
   channel_name?: string;
   created_at: string;
   updated_at: string;
+}
+
+// ============================================================
+// Feature 1: External Calendar Integration Types
+// ============================================================
+export interface CalendarConnection {
+  id: string;
+  user: string;
+  user_name?: string;
+  provider: 'google' | 'outlook' | 'apple' | 'caldav';
+  provider_display?: string;
+  name: string;
+  calendar_id?: string;
+  access_token_encrypted?: string;
+  refresh_token_encrypted?: string;
+  token_expires_at?: string;
+  sync_enabled: boolean;
+  sync_tasks: boolean;
+  sync_milestones: boolean;
+  sync_deadlines: boolean;
+  two_way_sync: boolean;
+  last_sync_at?: string;
+  last_sync_status?: 'success' | 'partial' | 'failed';
+  last_sync_error?: string;
+  color?: string;
+  is_primary: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  calendar_connection: string;
+  external_event_id: string;
+  title: string;
+  description?: string;
+  start_time: string;
+  end_time: string;
+  all_day: boolean;
+  location?: string;
+  status: 'confirmed' | 'tentative' | 'cancelled';
+  recurring: boolean;
+  recurrence_rule?: string;
+  linked_task?: string;
+  linked_task_title?: string;
+  linked_milestone?: string;
+  linked_milestone_title?: string;
+  attendees: string[];
+  reminders: { method: string; minutes: number }[];
+  external_link?: string;
+  last_synced_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CalendarSyncResult {
+  success: boolean;
+  events_synced: number;
+  events_created: number;
+  events_updated: number;
+  events_deleted: number;
+  errors: string[];
+  synced_at: string;
+}
+
+// ============================================================
+// Feature 2: File Attachments & Document Management Types
+// ============================================================
+export interface FileAttachment {
+  id: string;
+  name: string;
+  original_filename: string;
+  file: string;
+  file_url?: string;
+  file_type: 'document' | 'image' | 'spreadsheet' | 'presentation' | 'pdf' | 'code' | 'archive' | 'other';
+  file_type_display?: string;
+  mime_type: string;
+  file_size: number;
+  file_size_display?: string;
+  content_type: string;
+  object_id: string;
+  description?: string;
+  tags: string[];
+  uploaded_by: string;
+  uploaded_by_name?: string;
+  version: number;
+  is_latest: boolean;
+  parent_version?: string;
+  checksum?: string;
+  virus_scanned: boolean;
+  virus_scan_result?: 'clean' | 'infected' | 'error';
+  preview_available: boolean;
+  preview_url?: string;
+  download_count: number;
+  last_accessed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FileVersion {
+  id: string;
+  file_attachment: string;
+  file_name: string;
+  version_number: number;
+  file: string;
+  file_url?: string;
+  file_size: number;
+  file_size_display?: string;
+  checksum?: string;
+  change_summary?: string;
+  uploaded_by: string;
+  uploaded_by_name?: string;
+  is_current: boolean;
+  created_at: string;
+}
+
+export interface FileUploadProgress {
+  file_name: string;
+  progress: number;
+  status: 'pending' | 'uploading' | 'processing' | 'complete' | 'error';
+  error_message?: string;
+}
+
+// ============================================================
+// Feature 3: Custom Dashboard Widgets Types
+// ============================================================
+export type WidgetType = 
+  | 'task_completion_rate'
+  | 'project_health'
+  | 'team_workload'
+  | 'time_tracking_summary'
+  | 'budget_overview'
+  | 'burndown_chart'
+  | 'velocity_chart'
+  | 'upcoming_deadlines'
+  | 'recent_activity'
+  | 'notifications_feed'
+  | 'calendar_view'
+  | 'resource_utilization'
+  | 'task_list'
+  | 'milestone_tracker'
+  | 'project_timeline'
+  | 'gantt_chart'
+  | 'kanban_board'
+  | 'team_availability'
+  | 'priority_matrix'
+  | 'custom_chart'
+  | 'custom_metric'
+  | 'custom_table'
+  | 'markdown_note'
+  | 'embedded_iframe'
+  | 'quick_actions';
+
+export interface Dashboard {
+  id: string;
+  owner: string;
+  owner_name?: string;
+  company: string;
+  name: string;
+  description?: string;
+  is_default: boolean;
+  is_shared: boolean;
+  shared_with: string[];
+  shared_with_details?: { id: string; name: string; email: string }[];
+  layout: 'grid' | 'freeform';
+  columns: number;
+  row_height: number;
+  background_color?: string;
+  widgets?: DashboardWidget[];
+  widget_count?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DashboardWidget {
+  id: string;
+  dashboard: string;
+  widget_type: WidgetType;
+  widget_type_display?: string;
+  title: string;
+  subtitle?: string;
+  position_x: number;
+  position_y: number;
+  width: number;
+  height: number;
+  min_width?: number;
+  min_height?: number;
+  config: Record<string, unknown>;
+  filters?: {
+    project_id?: string;
+    user_id?: string;
+    date_range?: string;
+    status?: string[];
+    priority?: string[];
+    tags?: string[];
+  };
+  data_source?: string;
+  refresh_interval: number;
+  show_header: boolean;
+  show_border: boolean;
+  background_color?: string;
+  text_color?: string;
+  accent_color?: string;
+  is_visible: boolean;
+  cached_data?: Record<string, unknown>;
+  last_refreshed_at?: string;
+  order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WidgetTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  widget_type: WidgetType;
+  default_config: Record<string, unknown>;
+  preview_image?: string;
+  category: 'productivity' | 'projects' | 'resources' | 'time' | 'budget' | 'custom';
+  category_display?: string;
+  is_premium: boolean;
+  is_active: boolean;
+  usage_count?: number;
+  created_at: string;
+}
+
+export interface DashboardTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  preview_image?: string;
+  layout_config: Record<string, unknown>;
+  widgets: Partial<DashboardWidget>[];
+  category: 'personal' | 'team' | 'project' | 'executive' | 'custom';
+  category_display?: string;
+  is_premium: boolean;
+  is_active: boolean;
+  usage_count?: number;
+  created_at: string;
+}
+
+export interface WidgetData {
+  widget_id: string;
+  widget_type: WidgetType;
+  data: Record<string, unknown>;
+  generated_at: string;
+  cache_expires_at?: string;
+}
+
+// ============================================================
+// Feature 4: Resource Allocation & Capacity Planning Types
+// ============================================================
+export interface ResourceAllocation {
+  id: string;
+  user: string;
+  user_name?: string;
+  user_avatar?: string;
+  project: string;
+  project_title?: string;
+  task?: string;
+  task_title?: string;
+  allocation_type: 'full_time' | 'part_time' | 'hourly' | 'on_demand';
+  allocation_type_display?: string;
+  allocated_hours: number;
+  allocated_percentage: number;
+  hourly_rate?: number;
+  start_date: string;
+  end_date?: string;
+  is_billable: boolean;
+  status: 'planned' | 'active' | 'completed' | 'cancelled';
+  status_display?: string;
+  notes?: string;
+  skills_required: string[];
+  actual_hours?: number;
+  variance?: number;
+  created_by: string;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserCapacity {
+  id: string;
+  user: string;
+  user_name?: string;
+  user_avatar?: string;
+  week_start: string;
+  total_hours: number;
+  allocated_hours: number;
+  available_hours: number;
+  utilized_percentage: number;
+  is_overallocated: boolean;
+  overallocation_hours: number;
+  leave_hours: number;
+  meeting_hours: number;
+  notes?: string;
+  allocations?: ResourceAllocation[];
+  projects?: { id: string; title: string; hours: number }[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CapacityWarning {
+  id: string;
+  user: string;
+  user_name?: string;
+  warning_type: 'overallocation' | 'underutilization' | 'skill_gap' | 'conflict' | 'deadline_risk';
+  warning_type_display?: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity_display?: string;
+  message: string;
+  details: Record<string, unknown>;
+  affected_projects: string[];
+  suggested_action?: string;
+  is_acknowledged: boolean;
+  acknowledged_by?: string;
+  acknowledged_at?: string;
+  is_resolved: boolean;
+  resolved_at?: string;
+  created_at: string;
+}
+
+export interface GanttChartData {
+  id: string;
+  name: string;
+  type: 'project' | 'task' | 'milestone' | 'allocation';
+  start: string;
+  end: string;
+  progress?: number;
+  assignee?: string;
+  assignee_name?: string;
+  parent_id?: string;
+  dependencies?: string[];
+  color?: string;
+  is_critical_path?: boolean;
+  children?: GanttChartData[];
+}
+
+export interface ResourceHeatmapData {
+  user_id: string;
+  user_name: string;
+  weeks: {
+    week_start: string;
+    utilization: number;
+    status: 'available' | 'optimal' | 'busy' | 'overloaded';
+  }[];
+}
+
+// ============================================================
+// Feature 5: Budget & Cost Tracking Types
+// ============================================================
+export interface ProjectBudget {
+  id: string;
+  project: string;
+  project_title?: string;
+  budget_type: 'fixed' | 'time_and_materials' | 'retainer' | 'milestone_based';
+  budget_type_display?: string;
+  total_budget: number;
+  currency: string;
+  labor_budget: number;
+  materials_budget: number;
+  contingency_budget: number;
+  contingency_percentage: number;
+  spent_amount: number;
+  committed_amount: number;
+  remaining_amount: number;
+  variance_amount: number;
+  variance_percentage: number;
+  forecast_at_completion: number;
+  health: 'on_track' | 'at_risk' | 'over_budget' | 'under_budget';
+  health_display?: string;
+  billing_rate?: number;
+  start_date: string;
+  end_date?: string;
+  is_active: boolean;
+  notes?: string;
+  created_by: string;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ExpenseCategory = 
+  | 'labor'
+  | 'materials'
+  | 'software'
+  | 'hardware'
+  | 'travel'
+  | 'training'
+  | 'consulting'
+  | 'marketing'
+  | 'overhead'
+  | 'other';
+
+export interface Expense {
+  id: string;
+  budget: string;
+  project?: string;
+  project_title?: string;
+  task?: string;
+  task_title?: string;
+  category: ExpenseCategory;
+  category_display?: string;
+  description: string;
+  amount: number;
+  currency: string;
+  expense_date: string;
+  is_billable: boolean;
+  is_approved: boolean;
+  approved_by?: string;
+  approved_by_name?: string;
+  approved_at?: string;
+  vendor?: string;
+  invoice_number?: string;
+  receipt_attachment?: string;
+  receipt_url?: string;
+  notes?: string;
+  submitted_by: string;
+  submitted_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BudgetAlert {
+  id: string;
+  budget: string;
+  project_title?: string;
+  alert_type: 'threshold_warning' | 'threshold_critical' | 'over_budget' | 'forecast_warning' | 'anomaly';
+  alert_type_display?: string;
+  severity: 'info' | 'warning' | 'critical';
+  severity_display?: string;
+  threshold_percentage?: number;
+  current_percentage: number;
+  message: string;
+  details: Record<string, unknown>;
+  is_acknowledged: boolean;
+  acknowledged_by?: string;
+  acknowledged_by_name?: string;
+  acknowledged_at?: string;
+  is_resolved: boolean;
+  resolved_at?: string;
+  created_at: string;
+}
+
+export interface BudgetVarianceReport {
+  id: string;
+  budget: string;
+  project_title?: string;
+  report_period: 'weekly' | 'monthly' | 'quarterly' | 'custom';
+  period_start: string;
+  period_end: string;
+  planned_cost: number;
+  actual_cost: number;
+  variance_amount: number;
+  variance_percentage: number;
+  cpi: number; // Cost Performance Index
+  spi: number; // Schedule Performance Index
+  eac: number; // Estimate at Completion
+  etc: number; // Estimate to Complete
+  analysis: string;
+  recommendations: string[];
+  by_category: {
+    category: ExpenseCategory;
+    planned: number;
+    actual: number;
+    variance: number;
+  }[];
+  trend_data: {
+    period: string;
+    planned: number;
+    actual: number;
+  }[];
+  generated_by: string;
+  generated_by_name?: string;
+  created_at: string;
+}
+
+// ============================================================
+// Feature 6: PWA & Offline Mode Types
+// ============================================================
+export interface OfflineQueueItem {
+  id: string;
+  operation: 'create' | 'update' | 'delete';
+  entity_type: 'task' | 'progress' | 'time_entry' | 'comment' | 'attachment';
+  entity_id?: string;
+  payload: Record<string, unknown>;
+  timestamp: string;
+  retries: number;
+  status: 'pending' | 'syncing' | 'completed' | 'failed';
+  error?: string;
+}
+
+export interface SyncStatus {
+  is_online: boolean;
+  last_sync: string;
+  pending_changes: number;
+  is_syncing: boolean;
+  sync_progress?: number;
+  conflicts: SyncConflict[];
+}
+
+export interface SyncConflict {
+  id: string;
+  entity_type: string;
+  entity_id: string;
+  local_version: Record<string, unknown>;
+  remote_version: Record<string, unknown>;
+  local_timestamp: string;
+  remote_timestamp: string;
+  field_conflicts: string[];
+  resolution?: 'local' | 'remote' | 'merged';
+}
+
+export interface CacheConfig {
+  entity_type: string;
+  max_age_seconds: number;
+  max_items: number;
+  priority: 'high' | 'medium' | 'low';
+}
+
+// ============================================================
+// Feature 7: Advanced Notification Rules Types
+// ============================================================
+export type NotificationTrigger =
+  | 'task_assigned'
+  | 'task_completed'
+  | 'task_overdue_days'
+  | 'task_due_soon_hours'
+  | 'task_blocked'
+  | 'task_status_changed'
+  | 'task_priority_changed'
+  | 'progress_below_threshold'
+  | 'progress_updated'
+  | 'budget_threshold'
+  | 'milestone_approaching_days'
+  | 'milestone_completed'
+  | 'project_status_changed'
+  | 'time_entry_submitted'
+  | 'comment_added'
+  | 'mention'
+  | 'team_member_joined'
+  | 'custom_field_changed'
+  | 'recurring_schedule';
+
+export type NotificationChannel = 'email' | 'push' | 'in_app' | 'sms' | 'slack' | 'teams' | 'webhook';
+
+export interface NotificationRule {
+  id: string;
+  company: string;
+  created_by: string;
+  created_by_name?: string;
+  name: string;
+  description?: string;
+  trigger_type: NotificationTrigger;
+  trigger_type_display?: string;
+  trigger_conditions: {
+    threshold?: number;
+    days?: number;
+    hours?: number;
+    status?: string;
+    priority?: string;
+    field_name?: string;
+    field_value?: unknown;
+  };
+  channels: NotificationChannel[];
+  recipients_type: 'specific_users' | 'role_based' | 'task_assignee' | 'project_team' | 'custom_query';
+  recipients_type_display?: string;
+  specific_recipients: string[];
+  specific_recipients_details?: { id: string; name: string; email: string }[];
+  recipient_roles: string[];
+  message_template: string;
+  subject_template?: string;
+  include_details: boolean;
+  include_action_buttons: boolean;
+  schedule?: {
+    type: 'immediate' | 'digest' | 'scheduled';
+    digest_frequency?: 'hourly' | 'daily' | 'weekly';
+    scheduled_time?: string;
+    timezone?: string;
+  };
+  filters?: {
+    projects?: string[];
+    users?: string[];
+    priority?: string[];
+    tags?: string[];
+  };
+  is_active: boolean;
+  delivery_count?: number;
+  last_triggered_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NotificationDelivery {
+  id: string;
+  rule: string;
+  rule_name?: string;
+  channel: NotificationChannel;
+  channel_display?: string;
+  recipient: string;
+  recipient_name?: string;
+  recipient_contact?: string;
+  subject?: string;
+  message: string;
+  status: 'pending' | 'sent' | 'delivered' | 'failed' | 'bounced';
+  status_display?: string;
+  sent_at?: string;
+  delivered_at?: string;
+  opened_at?: string;
+  clicked_at?: string;
+  error_message?: string;
+  retry_count: number;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface PushSubscription {
+  id: string;
+  user: string;
+  endpoint: string;
+  p256dh_key: string;
+  auth_key: string;
+  user_agent?: string;
+  device_type?: 'desktop' | 'mobile' | 'tablet';
+  is_active: boolean;
+  last_used_at?: string;
+  created_at: string;
+}
+
+export interface NotificationDigest {
+  id: string;
+  user: string;
+  digest_type: 'daily' | 'weekly';
+  period_start: string;
+  period_end: string;
+  notification_count: number;
+  summary: {
+    tasks_assigned: number;
+    tasks_completed: number;
+    tasks_overdue: number;
+    comments: number;
+    mentions: number;
+  };
+  items: {
+    type: string;
+    title: string;
+    timestamp: string;
+    link?: string;
+  }[];
+  sent_at?: string;
+  created_at: string;
+}
+
+// ============================================================
+// Feature 8: Audit Logs & Change History Types
+// ============================================================
+export type AuditAction =
+  | 'create'
+  | 'update'
+  | 'delete'
+  | 'view'
+  | 'export'
+  | 'import'
+  | 'login'
+  | 'logout'
+  | 'permission_change'
+  | 'status_change'
+  | 'assignment_change'
+  | 'bulk_action'
+  | 'api_call'
+  | 'integration_sync';
+
+export interface AuditLog {
+  id: string;
+  user: string;
+  user_name?: string;
+  user_email?: string;
+  company: string;
+  action: AuditAction;
+  action_display?: string;
+  content_type: string;
+  object_id: string;
+  object_repr: string;
+  entity_type?: string;
+  entity_title?: string;
+  changes: {
+    field: string;
+    field_display?: string;
+    old_value: unknown;
+    new_value: unknown;
+  }[];
+  ip_address?: string;
+  user_agent?: string;
+  request_id?: string;
+  session_id?: string;
+  additional_data: Record<string, unknown>;
+  is_system_action: boolean;
+  is_sensitive: boolean;
+  timestamp: string;
+}
+
+export interface ChangeSnapshot {
+  id: string;
+  audit_log: string;
+  snapshot_type: 'before' | 'after';
+  content_type: string;
+  object_id: string;
+  snapshot_data: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface AuditLogSearch {
+  id: string;
+  user: string;
+  name: string;
+  filters: {
+    action?: AuditAction[];
+    user_id?: string[];
+    content_type?: string[];
+    date_from?: string;
+    date_to?: string;
+    search_text?: string;
+  };
+  is_saved: boolean;
+  last_used_at?: string;
+  created_at: string;
+}
+
+export interface AuditLogExport {
+  id: string;
+  user: string;
+  format: 'csv' | 'json' | 'pdf';
+  filters: Record<string, unknown>;
+  record_count: number;
+  file_url?: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  error_message?: string;
+  created_at: string;
+  completed_at?: string;
+}
+
+export interface EntityHistory {
+  entity_type: string;
+  entity_id: string;
+  entity_title: string;
+  created_at: string;
+  created_by: string;
+  created_by_name?: string;
+  last_modified_at: string;
+  last_modified_by: string;
+  last_modified_by_name?: string;
+  change_count: number;
+  changes: AuditLog[];
+}
+
+// ============================================================
+// Feature 9: Multi-Tenant Support Types
+// ============================================================
+export type TenantPlan = 'free' | 'starter' | 'professional' | 'enterprise' | 'custom';
+
+export interface Tenant {
+  id: string;
+  name: string;
+  slug: string;
+  domain?: string;
+  subdomain?: string;
+  owner: string;
+  owner_name?: string;
+  plan: TenantPlan;
+  plan_display?: string;
+  is_active: boolean;
+  is_verified: boolean;
+  settings: {
+    timezone?: string;
+    date_format?: string;
+    week_start?: 'sunday' | 'monday';
+    default_currency?: string;
+    features_enabled?: string[];
+    max_users?: number;
+    max_projects?: number;
+    max_storage_gb?: number;
+  };
+  branding?: TenantBranding;
+  member_count?: number;
+  project_count?: number;
+  storage_used_gb?: number;
+  trial_ends_at?: string;
+  billing_email?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TenantBranding {
+  id: string;
+  tenant: string;
+  logo_url?: string;
+  logo_dark_url?: string;
+  favicon_url?: string;
+  primary_color: string;
+  secondary_color: string;
+  accent_color: string;
+  background_color: string;
+  text_color: string;
+  font_family?: string;
+  custom_css?: string;
+  login_background_url?: string;
+  email_header_html?: string;
+  email_footer_html?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TenantMember {
+  id: string;
+  tenant: string;
+  user: string;
+  user_name?: string;
+  user_email?: string;
+  user_avatar?: string;
+  role: 'owner' | 'admin' | 'member' | 'guest';
+  role_display?: string;
+  permissions: string[];
+  joined_at: string;
+  invited_by?: string;
+  invited_by_name?: string;
+  last_active_at?: string;
+  is_active: boolean;
+}
+
+export interface TenantInvitation {
+  id: string;
+  tenant: string;
+  tenant_name?: string;
+  email: string;
+  role: 'admin' | 'member' | 'guest';
+  role_display?: string;
+  invited_by: string;
+  invited_by_name?: string;
+  message?: string;
+  token?: string;
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  status_display?: string;
+  expires_at: string;
+  accepted_at?: string;
+  created_at: string;
+}
+
+export interface TenantUsageStats {
+  id: string;
+  tenant: string;
+  period_start: string;
+  period_end: string;
+  active_users: number;
+  total_tasks: number;
+  tasks_created: number;
+  tasks_completed: number;
+  total_projects: number;
+  projects_created: number;
+  storage_used_bytes: number;
+  api_calls: number;
+  file_uploads: number;
+  report_exports: number;
+  ai_requests: number;
+  created_at: string;
+}
+
+// ============================================================
+// Feature 10: API for Third-Party Integrations Types
+// ============================================================
+export interface APIKey {
+  id: string;
+  company: string;
+  name: string;
+  description?: string;
+  key_prefix: string;
+  key_hash?: string; // Never exposed, just for internal use
+  permissions: string[];
+  scopes: APIScope[];
+  rate_limit_per_minute: number;
+  rate_limit_per_day: number;
+  allowed_ips: string[];
+  allowed_origins: string[];
+  is_active: boolean;
+  expires_at?: string;
+  last_used_at?: string;
+  last_used_ip?: string;
+  usage_count: number;
+  created_by: string;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type APIScope =
+  | 'read:tasks'
+  | 'write:tasks'
+  | 'read:projects'
+  | 'write:projects'
+  | 'read:users'
+  | 'write:users'
+  | 'read:progress'
+  | 'write:progress'
+  | 'read:time'
+  | 'write:time'
+  | 'read:reports'
+  | 'read:analytics'
+  | 'read:files'
+  | 'write:files'
+  | 'admin:all';
+
+export interface APIRequestLog {
+  id: string;
+  api_key: string;
+  api_key_name?: string;
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  endpoint: string;
+  query_params?: Record<string, string>;
+  request_body_size?: number;
+  response_status: number;
+  response_time_ms: number;
+  ip_address?: string;
+  user_agent?: string;
+  error_message?: string;
+  timestamp: string;
+}
+
+export interface WebhookEndpoint {
+  id: string;
+  company: string;
+  name: string;
+  description?: string;
+  url: string;
+  secret: string; // For webhook signature verification
+  events: WebhookEvent[];
+  is_active: boolean;
+  verify_ssl: boolean;
+  timeout_seconds: number;
+  retry_count: number;
+  retry_delay_seconds: number;
+  headers: Record<string, string>;
+  last_triggered_at?: string;
+  last_success_at?: string;
+  last_failure_at?: string;
+  failure_count: number;
+  success_count: number;
+  created_by: string;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type WebhookEvent =
+  | 'task.created'
+  | 'task.updated'
+  | 'task.deleted'
+  | 'task.completed'
+  | 'task.assigned'
+  | 'project.created'
+  | 'project.updated'
+  | 'project.deleted'
+  | 'project.completed'
+  | 'progress.created'
+  | 'progress.updated'
+  | 'milestone.completed'
+  | 'user.created'
+  | 'user.updated'
+  | 'time_entry.created'
+  | 'comment.created'
+  | 'file.uploaded'
+  | 'budget.threshold_reached';
+
+export interface WebhookDelivery {
+  id: string;
+  webhook_endpoint: string;
+  webhook_name?: string;
+  event: WebhookEvent;
+  event_display?: string;
+  payload: Record<string, unknown>;
+  response_status?: number;
+  response_body?: string;
+  response_headers?: Record<string, string>;
+  response_time_ms?: number;
+  status: 'pending' | 'success' | 'failed' | 'retrying';
+  status_display?: string;
+  attempt_count: number;
+  next_retry_at?: string;
+  error_message?: string;
+  delivered_at?: string;
+  created_at: string;
+}
+
+export interface OAuthApplication {
+  id: string;
+  company: string;
+  name: string;
+  description?: string;
+  client_id: string;
+  client_secret?: string; // Only shown once on creation
+  redirect_uris: string[];
+  scopes: APIScope[];
+  is_confidential: boolean;
+  is_active: boolean;
+  logo_url?: string;
+  homepage_url?: string;
+  privacy_policy_url?: string;
+  terms_of_service_url?: string;
+  created_by: string;
+  created_by_name?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OAuthToken {
+  id: string;
+  application: string;
+  application_name?: string;
+  user: string;
+  user_name?: string;
+  scopes: APIScope[];
+  access_token?: string; // Only returned on creation
+  refresh_token?: string; // Only returned on creation
+  expires_at: string;
+  is_revoked: boolean;
+  last_used_at?: string;
+  created_at: string;
+}
+
+// API Response Wrappers
+export interface APIResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
+  meta?: {
+    request_id: string;
+    timestamp: string;
+    rate_limit_remaining: number;
+    rate_limit_reset: string;
+  };
+}
+
+export interface PaginatedAPIResponse<T> extends APIResponse<T[]> {
+  pagination: {
+    page: number;
+    per_page: number;
+    total_items: number;
+    total_pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  };
 }

@@ -38,3 +38,34 @@ export {
   TableCell,
   TableCaption,
 } from "./ui/table";
+
+// Feature Components - Calendar Integration
+export { CalendarConnectionCard, CalendarConnectDialog } from "./calendar";
+
+// Feature Components - File Attachments
+export { FileUploader, FileAttachmentCard } from "./files";
+
+// Feature Components - Dashboard Widgets
+export { DashboardWidget, DashboardBuilder, WidgetPicker } from "./dashboards";
+
+// Feature Components - Resources & Capacity
+export { ResourceHeatmap, GanttChart } from "./resources";
+
+// Feature Components - Budget Tracking
+export { BudgetOverviewCard, BudgetVarianceReportView } from "./budget";
+
+// Feature Components - Audit Logs
+export { AuditLogViewer } from "./audit";
+
+// Feature Components - Notification Rules
+export { NotificationRuleBuilder } from "./notifications";
+
+// Feature Components - Multi-Tenant
+export { TenantSettings } from "./tenants";
+
+// Feature Components - API Management
+export { APIKeyManager } from "./api";
+
+// Feature Components - Offline/PWA
+export { OfflineIndicator } from "./offline";
+

@@ -40,7 +40,7 @@ export default function LoginPage() {
       } else {
         toast.error(result.error || "Login failed. Please check your credentials.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);

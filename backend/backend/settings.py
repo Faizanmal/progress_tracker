@@ -56,6 +56,15 @@ INSTALLED_APPS = [
     "ai_insights.apps.AiInsightsConfig",
     "automation.apps.AutomationConfig",
     
+    # New feature apps
+    "integrations.apps.IntegrationsConfig",
+    "resources.apps.ResourcesConfig",
+    "dashboards.apps.DashboardsConfig",
+    "audit.apps.AuditConfig",
+    "notifications.apps.NotificationsConfig",
+    "tenants.apps.TenantsConfig",
+    "forms.apps.FormsConfig",
+    
     # Django Channels for WebSockets
     "channels",
 ]

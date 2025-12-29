@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 import { formsApi, templatesApi } from "@/src/lib/api-client";
 import type { FormTemplate } from "@/src/types";
 import { Button } from "@/src/components/ui/button";
@@ -35,8 +36,9 @@ export default function NewFormPage() {
 
       toast.success("Form generated successfully!");
       router.push(`/forms/${form.id}/edit`);
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to generate form");
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      toast.error(String((axiosError.response?.data as Record<string, unknown>)?.error) || "Failed to generate form");
       console.error(error);
     } finally {
       setLoading(false);

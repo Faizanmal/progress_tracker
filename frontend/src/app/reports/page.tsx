@@ -54,7 +54,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [reportData, setReportData] = useState<any>(null);
+  const [reportData, setReportData] = useState<unknown>(null);
   const [generatingReport, setGeneratingReport] = useState(false);
 
   // New report form state
@@ -90,10 +90,11 @@ export default function ReportsPage() {
       const report = await analyticsApi.createReport({
         name: newReport.name,
         description: newReport.description,
-        report_type: newReport.report_type,
-        filters: newReport.filters,
-        schedule: newReport.schedule === "none" ? null : newReport.schedule,
-        is_scheduled: newReport.schedule !== "none",
+        report_type: newReport.report_type as Report['report_type'],
+        config: newReport.filters,
+        frequency: 'once',
+        recipients: [],
+        send_email: false,
       });
       setReports([report, ...reports]);
       setCreateDialogOpen(false);
@@ -505,9 +506,8 @@ export default function ReportsPage() {
         </TabsContent>
       </Tabs>
 
-      {/* Report Preview Dialog */}
-      {selectedReport && reportData && (
-        <Dialog open={!!reportData} onOpenChange={() => setReportData(null)}>
+      {selectedReport && reportData != null && (
+        <Dialog open={reportData != null} onOpenChange={() => setReportData(null)}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{selectedReport.name} - Preview</DialogTitle>

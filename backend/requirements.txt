@@ -1,5 +1,5 @@
 # Core Django
-Django==5.2.9
+Django>=5.0,<6.0
 djangorestframework==3.16.1
 django-cors-headers==4.9.0
 
@@ -17,7 +17,7 @@ python-decouple==3.8
 # Task scheduling and background jobs
 celery==5.3.4
 redis==5.0.1
-django-celery-beat==2.5.0
+django-celery-beat>=2.6.0
 
 # Email
 django-anymail==10.2
@@ -27,6 +27,7 @@ Pillow==10.1.0
 
 # API documentation
 drf-yasg==1.21.7
+
 
 # Development
 django-debug-toolbar==4.2.0

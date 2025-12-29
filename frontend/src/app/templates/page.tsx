@@ -25,7 +25,7 @@ import {
 } from "@/src/components/ui/select";
 import { Switch } from "@/src/components/ui/switch";
 import { analyticsApi } from "@/src/lib/api-client";
-import { ProjectTemplate } from "@/src/types";
+import { ProjectTemplate, TaskTemplate } from "@/src/types";
 import { toast } from "sonner";
 import {
   LayoutTemplate,
@@ -107,8 +107,12 @@ export default function TemplatesPage() {
         name: newTemplate.name,
         description: newTemplate.description,
         category: newTemplate.category,
+        default_status: 'planning',
+        default_priority: 'medium',
+        estimated_duration_days: 30,
+        task_templates: newTemplate.default_tasks,
+        workflow_stages: ['planning', 'development', 'testing', 'deployment'],
         is_public: newTemplate.is_public,
-        default_tasks: newTemplate.default_tasks,
         settings: newTemplate.settings,
       });
       setTemplates([template, ...templates]);
@@ -152,8 +156,12 @@ export default function TemplatesPage() {
         name: `${template.name} (Copy)`,
         description: template.description,
         category: template.category,
+        default_status: 'planning',
+        default_priority: 'medium',
+        estimated_duration_days: 30,
+        task_templates: template.default_tasks || [],
+        workflow_stages: ['planning', 'development', 'testing', 'deployment'],
         is_public: false,
-        default_tasks: template.default_tasks,
         settings: template.settings,
       });
       setTemplates([duplicated, ...templates]);
@@ -512,7 +520,7 @@ export default function TemplatesPage() {
                   <div className="border-t pt-3">
                     <p className="text-sm font-medium mb-2">Included Tasks:</p>
                     <div className="space-y-1">
-                      {template.default_tasks.slice(0, 3).map((task: any, index: number) => (
+                      {template.default_tasks.slice(0, 3).map((task: TaskTemplate, index: number) => (
                         <div
                           key={index}
                           className="flex items-center text-sm text-muted-foreground"

@@ -21,7 +21,9 @@ import {
   Star
 } from "lucide-react";
 import { MotionDiv, FadeUp, StaggerContainer, StaggerItem, FloatingElement } from "@/src/lib/motion";
-import { PageLoader } from "@/src/components/ui/loading";
+import { PageLoader } from "@/src/components/ui/premium-loading";
+import { AnimatedDiv, ScrollReveal, GradientOrbs, FloatingElement as AnimatedFloat, AnimatedCard } from "@/src/components/ui/animated";
+import { motion } from "framer-motion";
 
 const features = [
   {
@@ -29,32 +31,50 @@ const features = [
     title: "Task Management",
     description: "Create, assign, and track tasks with detailed progress updates and real-time status tracking.",
     color: "primary",
+    gradient: "from-green-400 to-emerald-500",
   },
   {
     icon: FolderKanban,
-    title: "Project Tracking",
+    title: "Project Tracking", 
     description: "Organize tasks into projects and monitor overall progress with seamless team collaboration.",
     color: "success",
+    gradient: "from-blue-400 to-indigo-500",
   },
   {
     icon: Users,
     title: "Team Management",
     description: "Role-based access control for admins, managers, and employees with granular permissions.",
     color: "info",
+    gradient: "from-purple-400 to-violet-500",
   },
   {
     icon: TrendingUp,
     title: "Progress Analytics",
     description: "Real-time analytics and reporting to track team performance and productivity metrics.",
     color: "warning",
+    gradient: "from-orange-400 to-amber-500",
+  },
+  {
+    icon: Shield,
+    title: "Security & Privacy",
+    description: "Enterprise-grade security with encrypted data and secure user authentication systems.",
+    color: "primary",
+    gradient: "from-red-400 to-rose-500",
+  },
+  {
+    icon: Zap,
+    title: "AI Automation",
+    description: "Smart task assignment and workflow automation powered by advanced AI algorithms.",
+    color: "success",
+    gradient: "from-cyan-400 to-teal-500",
   },
 ];
 
 const stats = [
-  { value: "10K+", label: "Active Users" },
-  { value: "50K+", label: "Tasks Completed" },
-  { value: "99.9%", label: "Uptime" },
-  { value: "4.9/5", label: "User Rating" },
+  { value: "10K+", label: "Active Users", icon: Users },
+  { value: "50K+", label: "Tasks Completed", icon: CheckCircle2 },
+  { value: "99.9%", label: "Uptime", icon: TrendingUp },
+  { value: "4.9/5", label: "User Rating", icon: Star },
 ];
 
 export default function Home() {
@@ -68,7 +88,7 @@ export default function Home() {
   }, [user, isLoading, router]);
 
   if (isLoading) {
-    return <PageLoader message="Loading..." />;
+    return <PageLoader message="Loading Progress Tracker..." submessage="Preparing your workspace..." variant="premium" />;
   }
 
   if (user) {
@@ -76,85 +96,217 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen gradient-mesh overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-info/20 rounded-full blur-3xl" />
-      </div>
+    <>
+      <GradientOrbs />
+      <div className="min-h-screen relative overflow-hidden bg-background">
+        {/* Enhanced Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div 
+            className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, 50, 0],
+              y: [0, -30, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div 
+            className="absolute top-1/2 -left-40 w-80 h-80 bg-gradient-to-br from-violet-500/20 to-blue-500/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, -30, 0],
+              y: [0, 40, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div 
+            className="absolute -bottom-40 right-1/3 w-72 h-72 bg-gradient-to-br from-info/20 to-cyan-500/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, 40, 0],
+              y: [0, -50, 0],
+              scale: [1, 1.15, 1],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        </div>
 
-      <div className="relative">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 pt-20 pb-16 lg:pt-32 lg:pb-24">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
-            <FadeUp delay={0}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
-                  Modern Progress Tracking Platform
-                </span>
-              </div>
-            </FadeUp>
-
-            {/* Heading */}
-            <FadeUp delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
-                <span className="gradient-text">Track Progress.</span>
-                <br />
-                <span className="text-foreground">Boost Productivity.</span>
-              </h1>
-            </FadeUp>
-
-            {/* Subheading */}
-            <FadeUp delay={0.2}>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-                The all-in-one platform to track employee progress, manage tasks, 
-                and boost team productivity with powerful analytics and AI-driven insights.
-              </p>
-            </FadeUp>
-
-            {/* CTAs */}
-            <FadeUp delay={0.3}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  variant="hero" 
-                  size="xl" 
-                  onClick={() => router.push("/register")}
-                  className="group"
+        <div className="relative">
+          {/* Enhanced Hero Section */}
+          <section className="container mx-auto px-4 pt-24 pb-20 lg:pt-40 lg:pb-32">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Enhanced Badge */}
+              <AnimatedDiv variant="fadeInUp" delay={0} className="relative">
+                <motion.div
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 via-purple-500/10 to-primary/10 border border-primary/30 backdrop-blur-sm shadow-lg mb-8 group cursor-pointer"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="xl"
-                  onClick={() => router.push("/login")}
-                >
-                  Sign In
-                </Button>
-              </div>
-            </FadeUp>
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    <Sparkles className="h-4 w-4 text-primary" />
+                  </motion.div>
+                  <span className="text-sm font-medium bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                    ✨ Modern Progress Tracking Platform
+                  </span>
+                  <motion.div
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </motion.div>
+              </AnimatedDiv>
 
-            {/* Social Proof */}
-            <FadeUp delay={0.4}>
-              <div className="flex items-center justify-center gap-2 mt-8 text-sm text-muted-foreground">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div 
-                      key={i}
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-violet-500 border-2 border-background flex items-center justify-center text-xs text-white font-medium"
+              {/* Enhanced Heading */}
+              <AnimatedDiv variant="fadeInUp" delay={0.1} className="relative">
+                <motion.h1 
+                  className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-8 relative"
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                >
+                  <motion.span 
+                    className="block bg-gradient-to-r from-primary via-purple-500 to-blue-500 bg-clip-text text-transparent mb-2"
+                    animate={{ 
+                      backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                    }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    style={{ backgroundSize: '200% 200%' }}
+                  >
+                    Track Progress.
+                  </motion.span>
+                  <motion.span 
+                    className="block text-foreground"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                  >
+                    Boost Productivity.
+                  </motion.span>
+                  
+                  {/* Floating decorative elements */}
+                  <AnimatedFloat duration={6} offset={15} className="absolute -top-4 -right-8 text-primary/30">
+                    <Target className="w-8 h-8" />
+                  </AnimatedFloat>
+                  <AnimatedFloat duration={4} offset={10} className="absolute top-1/2 -left-6 text-purple-500/30">
+                    <TrendingUp className="w-6 h-6" />
+                  </AnimatedFloat>
+                </motion.h1>
+              </AnimatedDiv>
+
+              {/* Enhanced Subheading */}
+              <AnimatedDiv variant="fadeInUp" delay={0.3}>
+                <motion.p 
+                  className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
+                >
+                  The <span className="text-primary font-semibold">all-in-one platform</span> to track employee progress, manage tasks, 
+                  and boost team productivity with powerful analytics and{" "}
+                  <span className="text-gradient font-semibold">AI-driven insights</span>.
+                </motion.p>
+              </AnimatedDiv>
+
+              {/* Enhanced CTAs */}
+              <AnimatedDiv variant="fadeInUp" delay={0.4}>
+                <motion.div 
+                  className="flex flex-col sm:flex-row gap-6 justify-center mb-12"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      variant="hero" 
+                      size="2xl" 
+                      onClick={() => router.push("/register")}
+                      className="group relative overflow-hidden shadow-2xl shadow-primary/25 hover:shadow-primary/40"
                     >
-                      {String.fromCharCode(64 + i)}
-                    </div>
-                  ))}
-                </div>
+                      <span className="relative z-10 flex items-center">
+                        Get Started Free
+                        <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                      </span>
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                        initial={{ x: "-100%" }}
+                        whileHover={{ x: "100%" }}
+                        transition={{ duration: 0.6 }}
+                      />
+                    </Button>
+                  </motion.div>
+                  
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      variant="glassMorphism"
+                      size="2xl"
+                      onClick={() => router.push("/login")}
+                      className="group"
+                    >
+                      Sign In
+                      <motion.div
+                        className="ml-2 w-4 h-4 rounded-full bg-primary/20 group-hover:bg-primary/40 transition-colors duration-300"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </AnimatedDiv>
+
+              {/* Enhanced Social Proof */}
+              <FadeUp>
+                <AnimatedDiv variant="fadeInUp" delay={0.6}>
+                <motion.div 
+                  className="flex items-center justify-center gap-3 text-sm text-muted-foreground"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                  <span className="hidden sm:block">Trusted by teams at</span>
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <motion.div 
+                        key={i}
+                        className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-violet-500 border-3 border-background flex items-center justify-center text-xs text-white font-bold shadow-lg"
+                        whileHover={{ scale: 1.2, z: 10 }}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.7 + i * 0.1, type: "spring", stiffness: 300 }}
+                      >
+                        {String.fromCharCode(64 + i)}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
                 <span className="ml-2">
                   Trusted by <strong className="text-foreground">10,000+</strong> teams worldwide
                 </span>
-              </div>
-            </FadeUp>
+                </AnimatedDiv>
+              </FadeUp>
           </div>
         </section>
 
@@ -350,5 +502,6 @@ export default function Home() {
         </footer>
       </div>
     </div>
+    </>
   );
 }

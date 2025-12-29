@@ -62,7 +62,7 @@ export default function RegisterPage() {
           toast.error(typeof result.error === 'string' ? result.error : "Registration failed. Please try again.");
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
